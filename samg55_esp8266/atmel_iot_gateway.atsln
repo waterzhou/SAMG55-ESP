@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "atmel_iot_gateway", "atmel_iot_gateway\atmel_iot_gateway.cproj", "{DB33D2B2-61CE-4D74-89C8-966E52C89E76}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB33D2B2-61CE-4D74-89C8-966E52C89E76}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DB33D2B2-61CE-4D74-89C8-966E52C89E76}.Debug|ARM.Build.0 = Debug|ARM
+		{DB33D2B2-61CE-4D74-89C8-966E52C89E76}.Release|ARM.ActiveCfg = Release|ARM
+		{DB33D2B2-61CE-4D74-89C8-966E52C89E76}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
