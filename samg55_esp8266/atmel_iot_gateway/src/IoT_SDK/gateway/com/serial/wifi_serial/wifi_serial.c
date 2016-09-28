@@ -537,6 +537,9 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		{
 			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wi-Fi Module Ready!\r\n"));
 			uart_ready = 1;
+			led_blinking_mode = LED_MODE_OFF;
+			LED_On(LED0);
+			led_state = ON;
 			break;
 		}
 		
@@ -749,7 +752,8 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 			led_blinking_mode = LED_MODE_ON;
 		}
 		else {
-			button_mode = ENTER_GENERAL_MODE;
+			//IoT_DEBUG(GENERIC_DBG | IoT_DBG_INFO, ("enter test command mode\r\n"));
+			//button_mode = ENTER_GENERAL_MODE;
 		}
 	}
 	else{

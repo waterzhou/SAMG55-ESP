@@ -55,7 +55,7 @@
 
 
 #define STRING_EOL    "\r"
-#define STRING_HEADER "--Atmel G55 IoT Gateway --\r\n" \
+#define STRING_HEADER "--Atmel G55 IoT --\r\n" \
 		"-- "BOARD_NAME" --\r\n" \
 		"-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL
 
@@ -82,7 +82,9 @@
 #define WIFI_TASK_DELAY        (50 / portTICK_RATE_MS)
 #define WIFI_TASK_STACK_SIZE   (4096)
 
-extern void taskWifi( void *pvParameters);
+#define WIFI_SERIAL_TASK_STACK_SIZE			(1024)
+#define WIFI_SERIAL_TASK_PRIORITY			(tskIDLE_PRIORITY + 3)
+
 
 /*-----------------------------------------------------------*/
 
@@ -114,7 +116,6 @@ static void configure_console(void)
 	/* Configure console UART. */
 	sysclk_enable_peripheral_clock(CONSOLE_UART_ID);
 	stdio_serial_init(CONF_UART_CONSOLE, &uart_serial_options);
-	
 }
 
 int main(void){
@@ -127,7 +128,7 @@ int main(void){
 	create_dbg_sem();
 #endif
 			
-	IoT_xTaskCreate(serial_out, "serial_out", WIFI_SERIAL_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3, NULL);
+	IoT_xTaskCreate(serial_out, "serial_out", WIFI_SERIAL_TASK_STACK_SIZE, NULL, WIFI_SERIAL_TASK_PRIORITY, NULL);
 	
 	/* Start the RTOS scheduler. */
 	vTaskStartScheduler();

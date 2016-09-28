@@ -112,17 +112,18 @@ void system_board_init(void);
 
 /** \name LED0 definitions
  *  @{ */
-#define LED0_GPIO     (PIO_PA6_IDX)
+#define LED0_GPIO     (PIO_PA30_IDX)
 #define LED0_FLAGS    (PIO_OUTPUT_1 | PIO_DEFAULT)
 
-#define LED0_PIN                  IOPORT_CREATE_PIN(PIOA, 6)
+#define LED0_PIN                  IOPORT_CREATE_PIN(PIOA, 30)
 #define LED0_ACTIVE_LEVEL         false
 #define LED0_INACTIVE_LEVEL       !LED0_ACTIVE_LEVEL
 /** @} */
 
 /** \name SW0 definitions
  *  @{ */
-#define SW0_PIN                   IOPORT_CREATE_PIN(PIOA, 2)
+//#define SW0_PIN                   IOPORT_CREATE_PIN(PIOA, 2)
+#define SW0_PIN                   IOPORT_CREATE_PIN(PIOB, 0)
 #define SW0_ACTIVE                false
 #define SW0_INACTIVE              !SW0_ACTIVE
 #define SW0_SUPC_INPUT            2
@@ -182,9 +183,11 @@ void system_board_init(void);
 
 #define PUSHBUTTON_1_NAME    "SW0"
 #define PIN_PUSHBUTTON_1 {PIO_PA2, PIOA, ID_PIOA, PIO_INPUT, PIO_PULLUP | PIO_DEBOUNCE | PIO_IT_RISE_EDGE}
-#define PIN_PUSHBUTTON_1_MASK PIO_PA2
-#define PIN_PUSHBUTTON_1_PIO  PIOA
-#define PIN_PUSHBUTTON_1_ID   ID_PIOA
+//#define PIN_PUSHBUTTON_1_MASK PIO_PA2
+#define PIN_PUSHBUTTON_1_MASK PIO_PB0
+//#define PIN_PUSHBUTTON_1_PIO  PIOA
+#define PIN_PUSHBUTTON_1_PIO  PIOB
+#define PIN_PUSHBUTTON_1_ID   ID_PIOB
 #define PIN_PUSHBUTTON_1_TYPE PIO_INPUT
 #define PIN_PUSHBUTTON_1_ATTR PIO_PULLUP | PIO_DEBOUNCE | PIO_IT_FALL_EDGE
 /** @} */
@@ -192,13 +195,13 @@ void system_board_init(void);
 /** Number of on-board buttons */
 #define BUTTON_COUNT 1
 
-#define CONSOLE_UART               USART7
-#define CONSOLE_UART_ID            ID_FLEXCOM7
-/** USART7 pins (TXD7 and RXD7) definitions, PA27,28. */
-#define PINS_USART7        (PIO_PA27B_RXD7| PIO_PA28B_TXD7)
-#define PINS_USART7_FLAGS  (IOPORT_MODE_MUX_B)
+#define CONSOLE_UART               USART4
+#define CONSOLE_UART_ID            ID_FLEXCOM4
+/** USART4 pins (TXD4 and RXD4) definitions, PA3,4. */
+#define PINS_USART4        (PIO_PB9A_RXD4| PIO_PB8A_TXD4)
+#define PINS_USART4_FLAGS  (IOPORT_MODE_MUX_A)
 
-#define PINS_USART7_PORT   IOPORT_PIOA
+#define PINS_USART4_PORT   IOPORT_PIOB
 #define PINS_USART7_MASK   (PIO_PA27B_RXD7 | PIO_PA28B_TXD7)
 #define PINS_USART7_PIO    PIOA
 #define PINS_USART7_ID     ID_PIOA
