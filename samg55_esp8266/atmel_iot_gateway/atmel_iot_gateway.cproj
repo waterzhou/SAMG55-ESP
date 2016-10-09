@@ -33,20 +33,16 @@
           <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.layer.freertos.pdc" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="common.services.layer.freertos.spi" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.layer.freertos.usart" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.basic.gpio" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.utils.stdio.stdio_serial" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="sam.drivers.efc" value="Add" config="" content-id="Atmel.ASF" />
           <option id="sam.drivers.flexcom" value="Add" config="" content-id="Atmel.ASF" />
           <option id="sam.drivers.pio" value="Add" config="" content-id="Atmel.ASF" />
           <option id="sam.drivers.pmc" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="sam.drivers.spi" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="sam.services.flash" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="thirdparty.os.freertos.version" value="Add" config="7.3.0" content-id="Atmel.ASF" />
           <option id="sam.drivers.rtc" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="thirdparty.os.freertos.version" value="Add" config="7.3.0" content-id="Atmel.ASF" />
           <option id="common.services.freertos.peripheral_control" value="Add" config="" content-id="Atmel.ASF" />
           <option id="config.common.services.freertos.peripheral_control.spi" value="Add" config="no" content-id="Atmel.ASF" />
           <option id="config.common.services.freertos.peripheral_control.twi" value="Add" config="no" content-id="Atmel.ASF" />
@@ -284,12 +280,9 @@
           <file path="src/ASF/common/services/spi/sam_spi/spi_master.h" framework="" version="3.21.0" source="common\services\spi\sam_spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/spi/spi_master.h" framework="" version="3.21.0" source="common\services\spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/Config/conf_spi_master.h" framework="" version="3.21.0" source="common\services\spi\sam_spi\module_config\conf_spi_master.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam/drivers/spi/spi.c" framework="" version="3.21.0" source="sam\drivers\spi\spi.c" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam/drivers/spi/spi.h" framework="" version="3.21.0" source="sam\drivers\spi\spi.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/freertos/sam/freertos_usart_serial.c" framework="" version="3.21.0" source="common\services\freertos\sam\freertos_usart_serial.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/freertos/sam/freertos_usart_serial.h" framework="" version="3.21.0" source="common\services\freertos\sam\freertos_usart_serial.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam/services/flash_efc/flash_efc.c" framework="" version="3.21.0" source="sam\services\flash_efc\flash_efc.c" changed="False" content-id="Atmel.ASF" />
-          <file path="src/ASF/sam/services/flash_efc/flash_efc.h" framework="" version="3.21.0" source="sam\services\flash_efc\flash_efc.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/delay/sam/cycle_counter.c" framework="" version="3.21.0" source="common\services\delay\sam\cycle_counter.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/delay/sam/cycle_counter.h" framework="" version="3.21.0" source="common\services\delay\sam\cycle_counter.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/common/services/delay/delay.h" framework="" version="3.21.0" source="common\services\delay\delay.h" changed="False" content-id="Atmel.ASF" />
@@ -525,27 +518,7 @@
       <Value>../src/misc</Value>
       <Value>../src/ASF/sam/drivers/spi</Value>
       <Value>../src/ASF/common/services/spi/sam_spi</Value>
-      <Value>../src/ASF/sam/components</Value>
-      <Value>../src/ASF/sam/components/wifi</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bsp</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bsp/include</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bsp/source</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bus_wrapper</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bus_wrapper/include</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/bus_wrapper/source</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/common</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/common/include</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/common/source</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/driver</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/driver/include</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/driver/source</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/socket</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/socket/include</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/socket/source</Value>
       <Value>../src/ASF/sam/drivers/rtc</Value>
-      <Value>../src/IoT_SDK/gateway/com/serial</Value>
-      <Value>../src/IoT_SDK/gateway/com/serial/zigbee_serial</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -558,15 +531,12 @@
   <armgcc.linker.libraries.Libraries>
     <ListValues>
       <Value>libarm_cortexM4lf_math</Value>
-      <Value>libm</Value>
-      <Value>libfreeRTOSOneKeyConfig</Value>
     </ListValues>
   </armgcc.linker.libraries.Libraries>
   <armgcc.linker.libraries.LibrarySearchPaths>
     <ListValues>
       <Value>../cmsis/linkerScripts</Value>
       <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-      <Value>../src/ASF/sam/components/wifi/winc1500/smartconfig</Value>
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
@@ -650,24 +620,6 @@
     <Folder Include="src\ASF\sam\" />
     <Folder Include="src\ASF\sam\boards\" />
     <Folder Include="src\ASF\sam\boards\samg55_xplained_pro\" />
-    <Folder Include="src\ASF\sam\components\wifi\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bsp\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bsp\include\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bsp\source\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bus_wrapper\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bus_wrapper\include\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\bus_wrapper\source\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\common\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\common\include\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\common\source\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\driver\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\driver\include\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\driver\source\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\smartconfig" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\socket\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\socket\include\" />
-    <Folder Include="src\ASF\sam\components\wifi\winc1500\socket\source\" />
     <Folder Include="src\ASF\sam\drivers\" />
     <Folder Include="src\ASF\sam\drivers\efc\" />
     <Folder Include="src\ASF\sam\drivers\flexcom\" />
@@ -676,12 +628,8 @@
     <Folder Include="src\ASF\sam\drivers\pio\" />
     <Folder Include="src\ASF\sam\drivers\pmc\" />
     <Folder Include="src\ASF\sam\drivers\rtc\" />
-    <Folder Include="src\ASF\sam\drivers\spi\" />
     <Folder Include="src\ASF\sam\drivers\supc\" />
     <Folder Include="src\ASF\sam\drivers\usart\" />
-    <Folder Include="src\ASF\sam\components" />
-    <Folder Include="src\ASF\sam\services\" />
-    <Folder Include="src\ASF\sam\services\flash_efc\" />
     <Folder Include="src\ASF\sam\utils\" />
     <Folder Include="src\ASF\sam\utils\cmsis\" />
     <Folder Include="src\ASF\sam\utils\cmsis\samg\" />
@@ -717,13 +665,12 @@
     <Folder Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\portable\gcc\sam_cm4f\" />
     <Folder Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\portable\memmang\" />
     <Folder Include="src\config\" />
-    <Folder Include="src\IoT_SDK\config" />
+    <Folder Include="src\daikin\config" />
+    <Folder Include="src\daikin\wifi" />
     <Folder Include="src\IoT_SDK\gateway" />
-    <Folder Include="src\IoT_SDK\gateway\com" />
-    <Folder Include="src\IoT_SDK\gateway\com\serial" />
-    <Folder Include="src\IoT_SDK\gateway\com\serial\wifi_serial" />
     <Folder Include="src\misc" />
     <Folder Include="src\IoT_SDK" />
+    <Folder Include="src\daikin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\ASF\common\services\gpio\sam_gpio\sam_gpio.h">
@@ -732,111 +679,9 @@
     <None Include="src\ASF\common\services\gpio\gpio.h">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\bsp\include\nm_bsp.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\bsp\include\nm_bsp_samg55.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\bsp\source\nm_bsp_samg55.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\bus_wrapper\include\nm_bus_wrapper.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\bus_wrapper\source\nm_bus_wrapper_samg55.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\common\include\nm_common.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\common\source\nm_common.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\include\m2m_ota.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\include\m2m_periph.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\include\m2m_types.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\include\m2m_wifi.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\m2m_hif.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\m2m_hif.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\m2m_ota.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\m2m_periph.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\m2m_wifi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmasic.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmasic.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmbus.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmbus.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmdrv.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmdrv.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmi2c.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmi2c.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmspi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmspi.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmuart.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\driver\source\nmuart.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\smartconfig\freeRTOSOneKeyConfig.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\socket\include\m2m_socket_host_if.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\socket\include\socket.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\socket\source\socket.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\ASF\sam\components\wifi\winc1500\socket\source\socket_internal.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\ASF\sam\drivers\rtc\rtc.c">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="src\ASF\sam\components\wifi\winc1500\smartconfig\libfreeRTOSOneKeyConfig.a">
-      <SubType>compile</SubType>
-    </None>
     <None Include="src\ASF\sam\drivers\rtc\rtc.h">
       <SubType>compile</SubType>
     </None>
@@ -1368,12 +1213,6 @@
     <Compile Include="src\ASF\sam\drivers\pmc\sleep.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\ASF\sam\drivers\spi\spi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\sam\drivers\spi\spi.h">
-      <SubType>compile</SubType>
-    </None>
     <Compile Include="src\ASF\sam\drivers\supc\supc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1416,12 +1255,6 @@
     <None Include="src\ASF\sam\utils\cmsis\samg\samg55\include\instance\adc.h">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="src\ASF\sam\services\flash_efc\flash_efc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\sam\services\flash_efc\flash_efc.h">
-      <SubType>compile</SubType>
-    </None>
     <Compile Include="src\ASF\sam\utils\cmsis\samg\samg55\source\templates\gcc\startup_samg55.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1449,25 +1282,19 @@
     <Compile Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\timers.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\IoT_SDK\config\iot_config.h">
+    <Compile Include="src\daikin\config\iot_config.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\IoT_SDK\config\rtos.h">
+    <Compile Include="src\daikin\config\rtos.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\IoT_SDK\gateway\com\serial\wifi_serial\wifi_serial.c">
+    <Compile Include="src\daikin\wifi\wifi_serial.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\IoT_SDK\gateway\com\serial\wifi_serial\wifi_serial.h">
+    <Compile Include="src\daikin\wifi\wifi_serial.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\misc\crc32.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\misc\crc32.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\misc\debug.c">

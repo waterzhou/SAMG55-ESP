@@ -48,10 +48,10 @@
  */
 #include "asf.h"
 #include <string.h>
-#include "IoT_SDK/config/rtos.h"
+#include "daikin/config/rtos.h"
 #include "debug.h"
-#include "crc32.h"
-#include "wifi_serial/wifi_serial.h"
+
+#include "daikin/wifi//wifi_serial.h"
 
 
 #define STRING_EOL    "\r"

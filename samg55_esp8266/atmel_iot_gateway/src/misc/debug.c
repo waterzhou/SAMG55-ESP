@@ -38,7 +38,7 @@
  * \asf_license_stop
  *
  */
-#include "IoT_SDK/config/rtos.h"
+#include "daikin/config/rtos.h"
 #include "debug.h"
 
 #ifdef __IoT_DEBUG__

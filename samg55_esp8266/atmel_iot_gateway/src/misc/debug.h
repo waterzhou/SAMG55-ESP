@@ -43,7 +43,7 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#include "IoT_SDK/config/iot_config.h"
+#include "daikin/config/iot_config.h"
 
 /**
  * \name Wrappers for printing debug information
@@ -67,7 +67,7 @@
 
 #ifdef __IoT_DEBUG__
 
-#include "IoT_SDK/config/iot_config.h"
+#include "daikin/config/iot_config.h"
 
 /* Binary semaphore handle */
 extern xSemaphoreHandle xsem_dbg;

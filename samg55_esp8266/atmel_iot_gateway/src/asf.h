@@ -65,15 +65,14 @@
 // From module: FLEXCOM - Flexible Serial Communication Controller
 #include <flexcom.h>
 
-// From module: Flash - SAM Flash Service API
-#include <flash_efc.h>
-
 // From module: FreeRTOS - PDC Interface Layer
 #include <freertos_peripheral_control.h>
 #include <freertos_peripheral_control_private.h>
 
 // From module: FreeRTOS - SPI Interface Layer
 #include <freertos_spi_master.h>
+
+
 
 // From module: FreeRTOS - USART Interface Layer
 #include <freertos_usart_serial.h>
@@ -104,6 +103,8 @@
 // From module: Interrupt management - SAM implementation
 #include <interrupt.h>
 
+
+
 // From module: PDC - Peripheral DMA Controller Example
 #include <pdc.h>
 
@@ -126,8 +127,10 @@
 // From module: SAMG55 Xplained Pro LED support enabled
 #include <led.h>
 
+
+
 // From module: SPI - Serial Peripheral Interface
-#include <spi.h>
+//#include <spi.h>
 
 // From module: SUPC - Supply Controller
 #include <supc.h>
@@ -142,11 +145,15 @@
 // From module: System Clock Control - SAMG implementation
 #include <sysclk.h>
 
+
+
 // From module: USART - Serial interface - SAM implementation for devices with only USART
 #include <serial.h>
 
 // From module: USART - Univ. Syn Async Rec/Trans
 #include <usart.h>
+
+
 
 // From module: pio_handler support enabled
 #include <pio_handler.h>

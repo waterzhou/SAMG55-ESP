@@ -9,9 +9,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   2 .relocate     00000894  20000000  00407c50  00010000  2**3
                   CONTENTS, ALLOC, LOAD, CODE
-  3 .bss          00018e40  20000898  004084e8  00010894  2**3
+  3 .bss          00018e44  20000898  004084e8  00010894  2**3
                   ALLOC
-  4 .stack        00003000  200196d8  00421328  00010894  2**0
+  4 .stack        00003004  200196dc  0042132c  00010894  2**0
                   ALLOC
   5 .ARM.attributes 0000002e  00000000  00000000  00010894  2**0
                   CONTENTS, READONLY
@@ -27,19 +27,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  11 .debug_ranges 00000c90  00000000  00000000  0003171c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  0000883a  00000000  00000000  000323ac  2**0
+ 12 .debug_macro  00009b7f  00000000  00000000  000323ac  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   00010697  00000000  00000000  0003abe6  2**0
+ 13 .debug_line   000105aa  00000000  00000000  0003bf2b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00058711  00000000  00000000  0004b27d  2**0
+ 14 .debug_str    00058621  00000000  00000000  0004c4d5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  00002c74  00000000  00000000  000a3990  2**2
+ 15 .debug_frame  00002c74  00000000  00000000  000a4af8  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00400000 <_sfixed>:
-  400000:	2001c6d8 	.word	0x2001c6d8
+  400000:	2001c6e0 	.word	0x2001c6e0
   400004:	00400aa5 	.word	0x00400aa5
   400008:	00400aa1 	.word	0x00400aa1
   40000c:	00400aa1 	.word	0x00400aa1
@@ -295,8 +295,8 @@ _read (int file, char * ptr, int len)
 		return -1;
   40023a:	f04f 30ff 	mov.w	r0, #4294967295
   40023e:	4770      	bx	lr
-  400240:	20019548 	.word	0x20019548
-  400244:	20019540 	.word	0x20019540
+  400240:	2001954c 	.word	0x2001954c
+  400244:	20019544 	.word	0x20019544
 
 00400248 <_write>:
 int __attribute__((weak))
@@ -380,8 +380,8 @@ _write (int file, const char *ptr, int len)
 }
   40028a:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
   40028e:	bf00      	nop
-  400290:	20019544 	.word	0x20019544
-  400294:	20019548 	.word	0x20019548
+  400290:	20019548 	.word	0x20019548
+  400294:	2001954c 	.word	0x2001954c
 
 00400298 <Button1_Handler>:
  *  Handle process led1 status change.
@@ -1207,7 +1207,7 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_irq(void)
   400558:	4798      	blx	r3
   40055a:	bd08      	pop	{r3, pc}
   40055c:	2000000c 	.word	0x2000000c
-  400560:	20019538 	.word	0x20019538
+  400560:	2001953c 	.word	0x2001953c
   400564:	40034000 	.word	0x40034000
   400568:	0040082d 	.word	0x0040082d
   40056c:	004008d5 	.word	0x004008d5
@@ -2808,11 +2808,11 @@ __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_irq(void)
   400b50:	20000000 	.word	0x20000000
   400b54:	00407c50 	.word	0x00407c50
   400b58:	20000894 	.word	0x20000894
-  400b5c:	200196d8 	.word	0x200196d8
+  400b5c:	200196dc 	.word	0x200196dc
   400b60:	20000898 	.word	0x20000898
   400b64:	20000897 	.word	0x20000897
   400b68:	2000089c 	.word	0x2000089c
-  400b6c:	200196db 	.word	0x200196db
+  400b6c:	200196df 	.word	0x200196df
   400b70:	00400000 	.word	0x00400000
   400b74:	e000ed00 	.word	0xe000ed00
   400b78:	2000000c 	.word	0x2000000c
@@ -3113,7 +3113,7 @@ void system_init_flash(uint32_t ul_clk)
 }
   400d4e:	4770      	bx	lr
   400d50:	2000092c 	.word	0x2000092c
-  400d54:	2001c6d8 	.word	0x2001c6d8
+  400d54:	2001c6e0 	.word	0x2001c6e0
   400d58:	20027ffc 	.word	0x20027ffc
 
 00400d5c <_close>:
@@ -8351,9 +8351,9 @@ __always_inline static void arch_ioport_toggle_pin_level(ioport_pin_t pin)
   40256e:	4b01      	ldr	r3, [pc, #4]	; (402574 <vLedModeCallback+0x7c>)
   402570:	701a      	strb	r2, [r3, #0]
   402572:	4770      	bx	lr
-  402574:	20018b48 	.word	0x20018b48
+  402574:	20018b54 	.word	0x20018b54
   402578:	400e0e00 	.word	0x400e0e00
-  40257c:	20018ca5 	.word	0x20018ca5
+  40257c:	20018cdc 	.word	0x20018cdc
 
 00402580 <serial_resp_out>:
 
@@ -8412,9 +8412,9 @@ static void serial_resp_out(uint8_t resp_id, uint8_t status)
   4025ae:	4c04      	ldr	r4, [pc, #16]	; (4025c0 <serial_resp_out+0x40>)
   4025b0:	47a0      	blx	r4
   4025b2:	bd10      	pop	{r4, pc}
-  4025b4:	20018b50 	.word	0x20018b50
-  4025b8:	20000024 	.word	0x20000024
-  4025bc:	200194ec 	.word	0x200194ec
+  4025b4:	20018c74 	.word	0x20018c74
+  4025b8:	20000028 	.word	0x20000028
+  4025bc:	20018b40 	.word	0x20018b40
   4025c0:	0040132d 	.word	0x0040132d
 
 004025c4 <byte2hexstrstr>:
@@ -8613,11 +8613,11 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   4026b2:	4c06      	ldr	r4, [pc, #24]	; (4026cc <signal_to_wifi+0x88>)
   4026b4:	47a0      	blx	r4
   4026b6:	bd38      	pop	{r3, r4, r5, pc}
-  4026b8:	20018b70 	.word	0x20018b70
-  4026bc:	20018b74 	.word	0x20018b74
+  4026b8:	20018b64 	.word	0x20018b64
+  4026bc:	20018b68 	.word	0x20018b68
   4026c0:	00404421 	.word	0x00404421
-  4026c4:	20000028 	.word	0x20000028
-  4026c8:	200194ec 	.word	0x200194ec
+  4026c4:	20000020 	.word	0x20000020
+  4026c8:	20018b40 	.word	0x20018b40
   4026cc:	0040132d 	.word	0x0040132d
 
 004026d0 <form_serial_packet>:
@@ -8968,12 +8968,12 @@ static void auto_states_upload()
   4028ae:	b005      	add	sp, #20
   4028b0:	bd30      	pop	{r4, r5, pc}
   4028b2:	bf00      	nop
-  4028b4:	20018b64 	.word	0x20018b64
+  4028b4:	20018b58 	.word	0x20018b58
   4028b8:	00400ea1 	.word	0x00400ea1
-  4028bc:	20018cb4 	.word	0x20018cb4
+  4028bc:	20018cac 	.word	0x20018cac
   4028c0:	00400ec1 	.word	0x00400ec1
   4028c4:	400e1000 	.word	0x400e1000
-  4028c8:	200194fc 	.word	0x200194fc
+  4028c8:	20019500 	.word	0x20019500
   4028cc:	004014f9 	.word	0x004014f9
   4028d0:	00401991 	.word	0x00401991
   4028d4:	004019d1 	.word	0x004019d1
@@ -8981,18 +8981,18 @@ static void auto_states_upload()
   4028dc:	00404395 	.word	0x00404395
   4028e0:	00407580 	.word	0x00407580
   4028e4:	0040132d 	.word	0x0040132d
-  4028e8:	20000020 	.word	0x20000020
-  4028ec:	20018b48 	.word	0x20018b48
+  4028e8:	20000024 	.word	0x20000024
+  4028ec:	20018b54 	.word	0x20018b54
   4028f0:	00407594 	.word	0x00407594
-  4028f4:	200194cc 	.word	0x200194cc
+  4028f4:	20018ccc 	.word	0x20018ccc
   4028f8:	004026d1 	.word	0x004026d1
-  4028fc:	20018c84 	.word	0x20018c84
-  402900:	200194ec 	.word	0x200194ec
+  4028fc:	20018c8c 	.word	0x20018c8c
+  402900:	20018b40 	.word	0x20018b40
   402904:	004075ac 	.word	0x004075ac
-  402908:	200194f0 	.word	0x200194f0
-  40290c:	20018c70 	.word	0x20018c70
-  402910:	200196cc 	.word	0x200196cc
-  402914:	20018c80 	.word	0x20018c80
+  402908:	20018c90 	.word	0x20018c90
+  40290c:	20018b44 	.word	0x20018b44
+  402910:	200196d0 	.word	0x200196d0
+  402914:	20018cb0 	.word	0x20018cb0
   402918:	00402269 	.word	0x00402269
 
 0040291c <wifi_module_reset>:
@@ -9167,10 +9167,10 @@ __STATIC_INLINE void NVIC_EnableIRQ(IRQn_Type IRQn)
   4029e8:	004009d5 	.word	0x004009d5
   4029ec:	e000e100 	.word	0xe000e100
   4029f0:	004009d9 	.word	0x004009d9
-  4029f4:	20018cb8 	.word	0x20018cb8
-  4029f8:	200194e8 	.word	0x200194e8
-  4029fc:	200190bc 	.word	0x200190bc
-  402a00:	200194c8 	.word	0x200194c8
+  4029f4:	20018ce8 	.word	0x20018ce8
+  4029f8:	200194fc 	.word	0x200194fc
+  4029fc:	200190ec 	.word	0x200190ec
+  402a00:	200194f4 	.word	0x200194f4
   402a04:	004009e5 	.word	0x004009e5
   402a08:	004009c5 	.word	0x004009c5
   402a0c:	004009cd 	.word	0x004009cd
@@ -9297,11 +9297,11 @@ void WIFI_SERIAL_PORT_HANDLER(void)
   402aa8:	4000c200 	.word	0x4000c200
   402aac:	004009e1 	.word	0x004009e1
   402ab0:	00400a01 	.word	0x00400a01
-  402ab4:	20018b4c 	.word	0x20018b4c
-  402ab8:	200194e8 	.word	0x200194e8
-  402abc:	200194c8 	.word	0x200194c8
+  402ab4:	20018c64 	.word	0x20018c64
+  402ab8:	200194fc 	.word	0x200194fc
+  402abc:	200194f4 	.word	0x200194f4
   402ac0:	004009e5 	.word	0x004009e5
-  402ac4:	20018b40 	.word	0x20018b40
+  402ac4:	20018c9c 	.word	0x20018c9c
   402ac8:	0040145d 	.word	0x0040145d
   402acc:	00400e81 	.word	0x00400e81
   402ad0:	00400a19 	.word	0x00400a19
@@ -9348,11 +9348,11 @@ void config_wifi_fw_otau_url(void)
 }
   402b0c:	b003      	add	sp, #12
   402b0e:	bd30      	pop	{r4, r5, pc}
-  402b10:	200194dc 	.word	0x200194dc
-  402b14:	2001954c 	.word	0x2001954c
+  402b10:	20018cc0 	.word	0x20018cc0
+  402b14:	20019550 	.word	0x20019550
   402b18:	004075c8 	.word	0x004075c8
   402b1c:	004026d1 	.word	0x004026d1
-  402b20:	200194ec 	.word	0x200194ec
+  402b20:	20018b40 	.word	0x20018b40
   402b24:	0040132d 	.word	0x0040132d
 
 00402b28 <parse_serial_packet>:
@@ -9727,9 +9727,9 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   402e06:	47e0      	blx	ip
   402e08:	e027      	b.n	402e5a <parse_serial_packet+0x332>
   402e0a:	bf00      	nop
-  402e0c:	200195cc 	.word	0x200195cc
+  402e0c:	200195d0 	.word	0x200195d0
   402e10:	004025c5 	.word	0x004025c5
-  402e14:	200194fc 	.word	0x200194fc
+  402e14:	20019500 	.word	0x20019500
   402e18:	004014f9 	.word	0x004014f9
   402e1c:	00401991 	.word	0x00401991
   402e20:	004019d1 	.word	0x004019d1
@@ -9738,7 +9738,7 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   402e2c:	00407608 	.word	0x00407608
   402e30:	0040132d 	.word	0x0040132d
   402e34:	400e0e00 	.word	0x400e0e00
-  402e38:	20018ca4 	.word	0x20018ca4
+  402e38:	200194f8 	.word	0x200194f8
   402e3c:	0040761c 	.word	0x0040761c
   402e40:	00402581 	.word	0x00402581
   402e44:	00407640 	.word	0x00407640
@@ -10086,15 +10086,15 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   4030ca:	bf00      	nop
   4030cc:	004076a8 	.word	0x004076a8
   4030d0:	00404395 	.word	0x00404395
-  4030d4:	200196cc 	.word	0x200196cc
-  4030d8:	20018ca5 	.word	0x20018ca5
+  4030d4:	200196d0 	.word	0x200196d0
+  4030d8:	20018cdc 	.word	0x20018cdc
   4030dc:	00401991 	.word	0x00401991
   4030e0:	004019d1 	.word	0x004019d1
   4030e4:	00407574 	.word	0x00407574
   4030e8:	004076c4 	.word	0x004076c4
   4030ec:	00402645 	.word	0x00402645
   4030f0:	004076e8 	.word	0x004076e8
-  4030f4:	200194c4 	.word	0x200194c4
+  4030f4:	20018ce0 	.word	0x20018ce0
   4030f8:	00407700 	.word	0x00407700
   4030fc:	00407714 	.word	0x00407714
   403100:	00407734 	.word	0x00407734
@@ -10438,14 +10438,14 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   4033a6:	4b06      	ldr	r3, [pc, #24]	; (4033c0 <parse_serial_packet+0x898>)
   4033a8:	4798      	blx	r3
   4033aa:	e366      	b.n	403a7a <parse_serial_packet+0xf52>
-  4033ac:	200194c0 	.word	0x200194c0
+  4033ac:	200194f0 	.word	0x200194f0
   4033b0:	00401991 	.word	0x00401991
   4033b4:	004019d1 	.word	0x004019d1
   4033b8:	00407574 	.word	0x00407574
   4033bc:	004077a0 	.word	0x004077a0
   4033c0:	00404395 	.word	0x00404395
   4033c4:	004077b8 	.word	0x004077b8
-  4033c8:	20018ca5 	.word	0x20018ca5
+  4033c8:	20018cdc 	.word	0x20018cdc
   4033cc:	004077cc 	.word	0x004077cc
   4033d0:	004077e8 	.word	0x004077e8
   4033d4:	004077f8 	.word	0x004077f8
@@ -10787,9 +10787,9 @@ static unsigned char sum8(unsigned char *A, unsigned char n)
   403674:	00407574 	.word	0x00407574
   403678:	0040786c 	.word	0x0040786c
   40367c:	00404395 	.word	0x00404395
-  403680:	20018ca4 	.word	0x20018ca4
-  403684:	20018b48 	.word	0x20018b48
-  403688:	20018ca5 	.word	0x20018ca5
+  403680:	200194f8 	.word	0x200194f8
+  403684:	20018b54 	.word	0x20018b54
+  403688:	20018cdc 	.word	0x20018cdc
   40368c:	00407884 	.word	0x00407884
   403690:	0040789c 	.word	0x0040789c
   403694:	004078b8 	.word	0x004078b8
@@ -11130,8 +11130,8 @@ static void start_wifi_connect(void)
   403924:	00407918 	.word	0x00407918
   403928:	00402add 	.word	0x00402add
   40392c:	00407930 	.word	0x00407930
-  403930:	20018b58 	.word	0x20018b58
-  403934:	200194ec 	.word	0x200194ec
+  403930:	20018ca0 	.word	0x20018ca0
+  403934:	20018b40 	.word	0x20018b40
   403938:	00407954 	.word	0x00407954
   40393c:	00407970 	.word	0x00407970
   403940:	00407990 	.word	0x00407990
@@ -11139,7 +11139,7 @@ static void start_wifi_connect(void)
   403948:	004079d4 	.word	0x004079d4
   40394c:	004014f9 	.word	0x004014f9
   403950:	0040132d 	.word	0x0040132d
-  403954:	20018c94 	.word	0x20018c94
+  403954:	20018c7c 	.word	0x20018c7c
   403958:	004026d1 	.word	0x004026d1
 		break;
 		
@@ -11397,7 +11397,7 @@ void serial_in(void *parameter)
 	}
   403b26:	e7f3      	b.n	403b10 <serial_in+0x54>
   403b28:	0040291d 	.word	0x0040291d
-  403b2c:	200194fc 	.word	0x200194fc
+  403b2c:	20019500 	.word	0x20019500
   403b30:	004014f9 	.word	0x004014f9
   403b34:	00401991 	.word	0x00401991
   403b38:	004019d1 	.word	0x004019d1
@@ -11405,7 +11405,7 @@ void serial_in(void *parameter)
   403b40:	00404395 	.word	0x00404395
   403b44:	00407a40 	.word	0x00407a40
   403b48:	0040132d 	.word	0x0040132d
-  403b4c:	20018b40 	.word	0x20018b40
+  403b4c:	20018c9c 	.word	0x20018c9c
   403b50:	00402b29 	.word	0x00402b29
 
 00403b54 <serial_out>:
@@ -11757,8 +11757,8 @@ void serial_out(void *parameter)
   403d9c:	00402725 	.word	0x00402725
   403da0:	00407a5c 	.word	0x00407a5c
   403da4:	00402211 	.word	0x00402211
-  403da8:	20018c80 	.word	0x20018c80
-  403dac:	200194fc 	.word	0x200194fc
+  403da8:	20018cb0 	.word	0x20018cb0
+  403dac:	20019500 	.word	0x20019500
   403db0:	004014f9 	.word	0x004014f9
   403db4:	00401991 	.word	0x00401991
   403db8:	004019d1 	.word	0x004019d1
@@ -11768,15 +11768,15 @@ void serial_out(void *parameter)
   403dc8:	0040132d 	.word	0x0040132d
   403dcc:	004024f9 	.word	0x004024f9
   403dd0:	00407a8c 	.word	0x00407a8c
-  403dd4:	20018b44 	.word	0x20018b44
+  403dd4:	20018ce4 	.word	0x20018ce4
   403dd8:	00402269 	.word	0x00402269
   403ddc:	00407a98 	.word	0x00407a98
   403de0:	00407ab8 	.word	0x00407ab8
   403de4:	00402949 	.word	0x00402949
   403de8:	004012cd 	.word	0x004012cd
-  403dec:	20018b40 	.word	0x20018b40
+  403dec:	20018c9c 	.word	0x20018c9c
   403df0:	00407ad4 	.word	0x00407ad4
-  403df4:	200194ec 	.word	0x200194ec
+  403df4:	20018b40 	.word	0x20018b40
   403df8:	00407af4 	.word	0x00407af4
   403dfc:	00403abd 	.word	0x00403abd
   403e00:	00407b18 	.word	0x00407b18
@@ -11861,7 +11861,7 @@ void vFNBtton_Click_Hook( void )
   403e8a:	b004      	add	sp, #16
   403e8c:	bd70      	pop	{r4, r5, r6, pc}
   403e8e:	bf00      	nop
-  403e90:	20018c80 	.word	0x20018c80
+  403e90:	20018cb0 	.word	0x20018cb0
   403e94:	004019b1 	.word	0x004019b1
   403e98:	00402269 	.word	0x00402269
   403e9c:	00400e81 	.word	0x00400e81
@@ -12407,11 +12407,11 @@ static inline void stdio_serial_init(volatile void *usart, const usart_serial_op
   40414c:	004002b1 	.word	0x004002b1
   404150:	0040082d 	.word	0x0040082d
   404154:	4001c200 	.word	0x4001c200
-  404158:	20019548 	.word	0x20019548
+  404158:	2001954c 	.word	0x2001954c
   40415c:	00403fa5 	.word	0x00403fa5
-  404160:	20019544 	.word	0x20019544
+  404160:	20019548 	.word	0x20019548
   404164:	00403ea1 	.word	0x00403ea1
-  404168:	20019540 	.word	0x20019540
+  404168:	20019544 	.word	0x20019544
   40416c:	4001c000 	.word	0x4001c000
   404170:	00400425 	.word	0x00400425
   404174:	00400595 	.word	0x00400595
@@ -12482,7 +12482,7 @@ void vApplicationMallocFailedHook(void)
 	}
   4041f4:	e7fe      	b.n	4041f4 <vApplicationMallocFailedHook+0x48>
   4041f6:	bf00      	nop
-  4041f8:	200194fc 	.word	0x200194fc
+  4041f8:	20019500 	.word	0x20019500
   4041fc:	004014f9 	.word	0x004014f9
   404200:	00401991 	.word	0x00401991
   404204:	004019d1 	.word	0x004019d1
@@ -12545,7 +12545,7 @@ void vApplicationStackOverflowHook(xTaskHandle pxTask,
 	}
   404264:	e7fe      	b.n	404264 <vApplicationStackOverflowHook+0x48>
   404266:	bf00      	nop
-  404268:	200194fc 	.word	0x200194fc
+  404268:	20019500 	.word	0x20019500
   40426c:	004014f9 	.word	0x004014f9
   404270:	00401991 	.word	0x00401991
   404274:	004019d1 	.word	0x004019d1
@@ -12624,7 +12624,7 @@ void create_dbg_sem(void)
   4042d0:	bd10      	pop	{r4, pc}
   4042d2:	bf00      	nop
   4042d4:	004012cd 	.word	0x004012cd
-  4042d8:	200194fc 	.word	0x200194fc
+  4042d8:	20019500 	.word	0x20019500
   4042dc:	0040132d 	.word	0x0040132d
 
 004042e0 <configure_timer_for_run_time_stats>:
@@ -12639,7 +12639,7 @@ void configure_timer_for_run_time_stats(void)
   4042e6:	601a      	str	r2, [r3, #0]
   4042e8:	4770      	bx	lr
   4042ea:	bf00      	nop
-  4042ec:	20019500 	.word	0x20019500
+  4042ec:	20019504 	.word	0x20019504
 
 004042f0 <get_run_time_counter_value>:
 }
@@ -12733,7 +12733,7 @@ uint32_t get_run_time_counter_value(void)
   404334:	004019b1 	.word	0x004019b1
   404338:	00400e91 	.word	0x00400e91
   40433c:	e000ed04 	.word	0xe000ed04
-  404340:	20019500 	.word	0x20019500
+  404340:	20019504 	.word	0x20019504
 
 00404344 <__libc_init_array>:
   404344:	b570      	push	{r4, r5, r6, lr}
@@ -15028,7 +15028,7 @@ uint32_t get_run_time_counter_value(void)
   405a28:	6008      	str	r0, [r1, #0]
   405a2a:	e7d5      	b.n	4059d8 <_malloc_trim_r+0x3c>
   405a2c:	20000480 	.word	0x20000480
-  405a30:	20019510 	.word	0x20019510
+  405a30:	20019514 	.word	0x20019514
   405a34:	2000088c 	.word	0x2000088c
 
 00405a38 <_free_r>:
@@ -15211,7 +15211,7 @@ uint32_t get_run_time_counter_value(void)
   405bd8:	20000480 	.word	0x20000480
   405bdc:	20000488 	.word	0x20000488
   405be0:	20000888 	.word	0x20000888
-  405be4:	2001950c 	.word	0x2001950c
+  405be4:	20019510 	.word	0x20019510
 
 00405be8 <__sfvwrite_r>:
   405be8:	6893      	ldr	r3, [r2, #8]
@@ -15979,10 +15979,10 @@ uint32_t get_run_time_counter_value(void)
   406388:	0041      	lsls	r1, r0, #1
   40638a:	e6a5      	b.n	4060d8 <_malloc_r+0x80>
   40638c:	20000480 	.word	0x20000480
-  406390:	2001950c 	.word	0x2001950c
-  406394:	20019510 	.word	0x20019510
-  406398:	20019508 	.word	0x20019508
-  40639c:	20019504 	.word	0x20019504
+  406390:	20019510 	.word	0x20019510
+  406394:	20019514 	.word	0x20019514
+  406398:	2001950c 	.word	0x2001950c
+  40639c:	20019508 	.word	0x20019508
   4063a0:	2000088c 	.word	0x2000088c
   4063a4:	0a5a      	lsrs	r2, r3, #9
   4063a6:	2a04      	cmp	r2, #4
@@ -16702,7 +16702,7 @@ uint32_t get_run_time_counter_value(void)
   406ae6:	d0fb      	beq.n	406ae0 <_sbrk_r+0x14>
   406ae8:	602b      	str	r3, [r5, #0]
   406aea:	bd38      	pop	{r3, r4, r5, pc}
-  406aec:	200196d4 	.word	0x200196d4
+  406aec:	200196d8 	.word	0x200196d8
 
 00406af0 <__sread>:
   406af0:	b510      	push	{r4, lr}
@@ -16912,7 +16912,7 @@ uint32_t get_run_time_counter_value(void)
   406caa:	d0fb      	beq.n	406ca4 <_write_r+0x18>
   406cac:	6033      	str	r3, [r6, #0]
   406cae:	bd70      	pop	{r4, r5, r6, pc}
-  406cb0:	200196d4 	.word	0x200196d4
+  406cb0:	200196d8 	.word	0x200196d8
 
 00406cb4 <__register_exitproc>:
   406cb4:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -16989,7 +16989,7 @@ uint32_t get_run_time_counter_value(void)
   406d72:	d0fb      	beq.n	406d6c <_close_r+0x14>
   406d74:	602b      	str	r3, [r5, #0]
   406d76:	bd38      	pop	{r3, r4, r5, pc}
-  406d78:	200196d4 	.word	0x200196d4
+  406d78:	200196d8 	.word	0x200196d8
 
 00406d7c <_fclose_r>:
   406d7c:	2900      	cmp	r1, #0
@@ -17067,7 +17067,7 @@ uint32_t get_run_time_counter_value(void)
   406e1e:	602b      	str	r3, [r5, #0]
   406e20:	bd38      	pop	{r3, r4, r5, pc}
   406e22:	bf00      	nop
-  406e24:	200196d4 	.word	0x200196d4
+  406e24:	200196d8 	.word	0x200196d8
 
 00406e28 <_isatty_r>:
   406e28:	b538      	push	{r3, r4, r5, lr}
@@ -17085,7 +17085,7 @@ uint32_t get_run_time_counter_value(void)
   406e42:	d0fb      	beq.n	406e3c <_isatty_r+0x14>
   406e44:	602b      	str	r3, [r5, #0]
   406e46:	bd38      	pop	{r3, r4, r5, pc}
-  406e48:	200196d4 	.word	0x200196d4
+  406e48:	200196d8 	.word	0x200196d8
 
 00406e4c <_lseek_r>:
   406e4c:	b570      	push	{r4, r5, r6, lr}
@@ -17105,7 +17105,7 @@ uint32_t get_run_time_counter_value(void)
   406e6a:	d0fb      	beq.n	406e64 <_lseek_r+0x18>
   406e6c:	6033      	str	r3, [r6, #0]
   406e6e:	bd70      	pop	{r4, r5, r6, pc}
-  406e70:	200196d4 	.word	0x200196d4
+  406e70:	200196d8 	.word	0x200196d8
 
 00406e74 <_read_r>:
   406e74:	b570      	push	{r4, r5, r6, lr}
@@ -17125,7 +17125,7 @@ uint32_t get_run_time_counter_value(void)
   406e92:	d0fb      	beq.n	406e8c <_read_r+0x18>
   406e94:	6033      	str	r3, [r6, #0]
   406e96:	bd70      	pop	{r4, r5, r6, pc}
-  406e98:	200196d4 	.word	0x200196d4
+  406e98:	200196d8 	.word	0x200196d8
 
 00406e9c <__aeabi_uldivmod>:
   406e9c:	b953      	cbnz	r3, 406eb4 <__aeabi_uldivmod+0x18>
@@ -17784,8 +17784,8 @@ uint32_t get_run_time_counter_value(void)
   407b48:	20546f49 0a0d2d2d 53202d2d 35474d41     IoT --..-- SAMG5
   407b58:	50585f35 4e49414c 505f4445 2d204f52     5_XPLAINED_PRO -
   407b68:	2d0a0d2d 6f43202d 6c69706d 203a6465     -..-- Compiled: 
-  407b78:	20706553 32203732 20363130 323a3931     Sep 27 2016 19:2
-  407b88:	37313a36 0d2d2d20 00000000 69726573     6:17 --.....seri
+  407b78:	2074634f 32203920 20363130 323a3731     Oct  9 2016 17:2
+  407b88:	35303a39 0d2d2d20 00000000 69726573     9:05 --.....seri
   407b98:	6f5f6c61 00007475 70704176 6163696c     al_out..vApplica
   407ba8:	6e6f6974 6c6c614d 6146636f 64656c69     tionMallocFailed
   407bb8:	6b6f6f48 00000a0d 70704176 6163696c     Hook....vApplica
@@ -17858,14 +17858,14 @@ void portable_delay_cycles(unsigned long n)
 2000001c <xNextTaskUnblockTime>:
 2000001c:	ffff ffff                                   ....
 
-20000020 <button_mode.9429>:
-20000020:	0001 0000                                   ....
+20000020 <resp_out_data.9079>:
+20000020:	8c68 2001                                   h.. 
 
-20000024 <resp_out_data.9319>:
-20000024:	8ca8 2001                                   ... 
+20000024 <button_mode.9180>:
+20000024:	0001 0000                                   ....
 
-20000028 <resp_out_data.9328>:
-20000028:	8c88 2001 0000 0000                         ... ....
+20000028 <resp_out_data.9070>:
+20000028:	8cb4 2001 0000 0000                         ... ....
 
 20000030 <impure_data>:
 20000030:	0000 0000 031c 2000 0384 2000 03ec 2000     ....... ... ... 
