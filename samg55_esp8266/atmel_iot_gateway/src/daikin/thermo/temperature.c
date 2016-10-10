@@ -23,6 +23,7 @@ static volatile bool uartRecvDataStartHandle = false;
 
 static uint8_t sendbuff[32];
 ThermalParam_t thermalParam;
+static uint8_t thermimage[96*46];
 
 
 bool tsensorQueryWaitForHandling = false;
@@ -49,12 +50,12 @@ UARTStateMachine_t uartStateMachine = UART_STATE_MACHINE_SYMBOL_H;
 
 void tSensor_serial_init(void)
 {
-	uint32_t rx_timeout = (SERIAL_FRAME_INTERVAL * USART_BAUDRATE) / 1000;
+	uint32_t rx_timeout = (SERIAL_FRAME_INTERVAL * USART_BAUDRATE_TEM) / 1000;
 	sam_usart_opt_t usart_settings = {
-		.baudrate = USART_BAUDRATE,
-		.char_length = USART_CHRL,
-		.parity_type = USART_PARITY,
-		.stop_bits = USART_NBSTOP,
+		.baudrate = USART_BAUDRATE_TEM,
+		.char_length = USART_CHRL_TEM,
+		.parity_type = USART_PARITY_TEM,
+		.stop_bits = USART_NBSTOP_TEM,
 		.channel_mode = US_MR_CHMODE_NORMAL
 	};
 	flexcom_enable(TSENSOR_SERIAL_PORT_FLEXCOM);
@@ -80,7 +81,7 @@ void tSensor_serial_init(void)
 	//Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
 }
 
-
+static uint32_t recv_idx = 0;
 void tSensor_uart_isr_handler(void)
 {
 	portBASE_TYPE higher_priority_task_woken = pdFALSE;
@@ -97,10 +98,11 @@ void tSensor_uart_isr_handler(void)
 	}else if(status & US_CSR_TIMEOUT) {
 		if (tempUartRecvBuff.len > 0){
 			// notice task to process
-			//tsensorDataWaitforHandling = true;
-			//printf("Trigger semaphore for sensor..........\r\n");
-			//xSemaphoreGiveFromISR(startTsensorProcessing, &higher_priority_task_woken);
+			tsensorDataWaitforHandling = true;
+			printf("Get data from sensor..........%d\r\n", tempUartRecvBuff.len);
+			xSemaphoreGiveFromISR(startTsensorProcessing, &higher_priority_task_woken);
 		}
+		//tempUartRecvBuff.len = 0;
 		usart_start_rx_timeout(TSENSOR_SERIAL_PORT);
 	}else if(status & US_CSR_ENDTX) {
 		p_pdc = usart_get_pdc_base(TSENSOR_SERIAL_PORT);
@@ -123,13 +125,24 @@ void tSensor_handler(void)
 	tempUartRecvBuff.len = 0;
 	vPortExitCritical();
 	
-	xTimerStop(xTsensorCommTimeoutTimer, 0 );
+	//xTimerStop(xTsensorCommTimeoutTimer, 0 );
 	printf("%6d(%d):",xTaskGetTickCount(), uartRecvBuff.len);
-	for (uint16_t i = 0; i < uartRecvBuff.len; i++){
-		uartDataParser(uartRecvBuff.payload[i]); printf("%02X ",uartRecvBuff.payload[i]);
+	for (uint16_t i = 0; i < 3/*uartRecvBuff.len*/; i++){
+		/*uartDataParser(uartRecvBuff.payload[i]); */printf("%02X ",uartRecvBuff.payload[i]);
 	}
 	printf("\r\n");
-	xTimerStart(xTsensorCommTimeoutTimer, 0 );
+	if (uartRecvBuff.payload[0] == 0xCC &&
+		uartRecvBuff.payload[1] == 0x80)
+		{
+			Temp_Measure_Command_Send(SENSATION_MEASUREMENT_STOP);
+			memset(thermimage, 0, sizeof(thermimage));
+			memcpy(thermimage, &uartRecvBuff.payload[4], 96*46);
+			printf("thermo image: ");
+			for (uint16_t i = 0; i< 96*46; i++)
+				printf("%02X ",thermimage[i]);
+			printf("\r\n");
+		}
+	//xTimerStart(xTsensorCommTimeoutTimer, 0 );
 }
 
 static void uartDataParser(uint8_t data)
@@ -269,7 +282,7 @@ void vxTsensorDataQueryTimerCallback( xTimerHandle pxTimer )
 {
 	printf("Trigger semaphore for sensor2..................\r\n");
 	xSemaphoreGive( startTsensorProcessing );
-	tsensorQueryWaitForHandling = true;
+	//tsensorQueryWaitForHandling = true;
 }
 
 void vTsensorNoRspTimeoutTimerCallback( xTimerHandle pxTimer )
@@ -308,7 +321,7 @@ void sensor_task( void *pvParameters)
 		//vTaskDelay(1000);
 		xSemaphoreTake(startTsensorProcessing, portMAX_DELAY);
 		//printf("taskTSensor invoked\r\n");
-		if (tsensorQueryWaitForHandling){
+		/*if (tsensorQueryWaitForHandling){
 			tsensorQueryWaitForHandling = false;
 			switch(tsensorDataQueryState){
 				case MEASUREMENT_INIT:
@@ -340,12 +353,12 @@ void sensor_task( void *pvParameters)
 				tsensorDataQueryState= MEASUREMENT_INIT;
 				break;
 			}
-		}
+		}*/
 		if (tsensorDataWaitforHandling){
 			//printf("%06d:Received\r\n",xTaskGetTickCount());
 			tsensorDataWaitforHandling = false;
-			xTimerStop(xTsensorNoRspTimeoutTimer, 0 );
-			xTimerStart(xTsensorNoRspTimeoutTimer, 0 );
+			//xTimerStop(xTsensorNoRspTimeoutTimer, 0 );
+			//xTimerStart(xTsensorNoRspTimeoutTimer, 0 );
 			tSensor_handler();
 		}
 		

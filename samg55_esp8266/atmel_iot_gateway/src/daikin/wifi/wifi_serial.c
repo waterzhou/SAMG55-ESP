@@ -43,7 +43,7 @@
 #include "daikin/config/rtos.h"
 #include "misc/debug.h"
 #include "wifi_serial.h"
-//#include "daikin/thermo/temperature.h"
+#include "daikin/thermo/temperature.h"
 
 xQueueHandle serial_in_queue = NULL;
 xQueueHandle serial_out_queue = NULL;
@@ -173,6 +173,7 @@ void wifi_serial_init(uint32_t baudspeed)
 	usart_start_rx_timeout(WIFI_SERIAL_PORT);
 	usart_enable_tx(WIFI_SERIAL_PORT);
 	usart_enable_rx(WIFI_SERIAL_PORT);
+
 }
 
 void WIFI_SERIAL_PORT_HANDLER(void)
@@ -208,6 +209,7 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 
 		recv_idx = 0;
 		usart_start_rx_timeout(WIFI_SERIAL_PORT);
+		IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Wifi receive data timeout............\r\n"));
 		IoT_xQueueSendFromISR(serial_in_queue, &serial_recved, &xHigherPriorityTaskWoken);
 		if(xHigherPriorityTaskWoken != pdFALSE) {
 			IoT_vPortYieldFromISR();
@@ -388,11 +390,19 @@ static void start_wifi_connect(void)
 	out_data->len = pkt_len;
 	IoT_xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
 }
-
+extern xSemaphoreHandle startTsensorProcessing;
+extern bool tsensorDataWaitforHandling;
 static void startTemperature(void)
 {
 	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get temperature command.\r\n"));
-	//Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
+	//xSemaphoreGive( startTsensorProcessing );
+	//tsensorDataWaitforHandling = true;
+		
+	Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
+	delay_ms(500);
+	Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
+	delay_ms(500);
+	Temp_Measure_Get_Air_Condition_Info(0x00, 50);
 }
 static void startPicture(void)
 {
