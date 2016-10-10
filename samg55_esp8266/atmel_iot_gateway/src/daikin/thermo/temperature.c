@@ -5,6 +5,7 @@
  *  Author: A41477
  */ 
 #include "temperature.h"
+#include "daikin/wifi/wifi_serial.h"
 
 #define TSENSOR_UART_TIMEOUT_INTERVAL			(20  / portTICK_RATE_MS)
 
@@ -23,7 +24,7 @@ static volatile bool uartRecvDataStartHandle = false;
 
 static uint8_t sendbuff[32];
 ThermalParam_t thermalParam;
-static uint8_t thermimage[96*46];
+uint8_t thermimage[96*46 + 6];
 
 
 bool tsensorQueryWaitForHandling = false;
@@ -118,8 +119,26 @@ void resetTsensorCommStateMachine(void)
 	uartStateMachine = UART_STATE_MACHINE_MODE_HEAD;
 }
 
+void distributePacket(uint8_t* totalPacket, uint16_t len)
+{
+	if (len > 122)
+	{
+		uint16_t num = len / 122;
+		if (len % 122 > 0)
+		num += 1;
+		for(uint16_t i = 0; i < num; i++)
+		{
+			printf("----------------------------------%d------------------\r\n", i);
+			signal_to_wifi(totalPacket, i);
+		}
+	} else {
+		signal_to_wifi(totalPacket, 0);
+	}
+}
+uint8_t thermoIndex = 0;
 void tSensor_handler(void)
 {
+
 	vPortEnterCritical();
 	memcpy(&uartRecvBuff,&tempUartRecvBuff,tempUartRecvBuff.len + sizeof(uint16_t));
 	tempUartRecvBuff.len = 0;
@@ -136,14 +155,21 @@ void tSensor_handler(void)
 		{
 			Temp_Measure_Command_Send(SENSATION_MEASUREMENT_STOP);
 			memset(thermimage, 0, sizeof(thermimage));
-			memcpy(thermimage, &uartRecvBuff.payload[4], 96*46);
-			printf("thermo image: ");
+			memcpy(&thermimage[0], &uartRecvBuff.payload[4], 96*46);
+			/*printf("thermo image: ");
 			for (uint16_t i = 0; i< 96*46; i++)
 				printf("%02X ",thermimage[i]);
-			printf("\r\n");
+			printf("\r\n");*/
+			//distributePacket(thermimage, 4416);
+			thermoIndex = 0;
+			signal_to_wifi(thermimage, thermoIndex++);
+		
 		}
 	//xTimerStart(xTsensorCommTimeoutTimer, 0 );
+
 }
+
+
 
 static void uartDataParser(uint8_t data)
 {
@@ -271,6 +297,26 @@ void Temp_Measure_Get_Air_Condition_Info(uint8_t roomTemperature, uint8_t roomHu
 	sendbuff[6] = 0xAA;
 	sendbuff[7] = 0x8F;
 	sendToTsensorUart(sendbuff, 8);
+}
+
+void sendback_thermo_image_data ()
+{
+	/*static uint8_t resp_buf[8];
+	uint8_t *p = &resp_buf[0];
+	static serial_out_pk_t resp_send_packet;
+	static serial_out_pk_t *resp_out_data = &resp_send_packet;
+
+	*p++ = SERIAL_SOF;
+	*p++ = ENCRYPT_MODE;
+	*p++ = 2;
+	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
+	*p++ = temperature;
+	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
+	p++;
+	resp_out_data->buf = resp_buf;
+	resp_out_data->len = p - resp_buf;
+	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);*/
+	//nm_uart_send(UART1, &buf[0], p - &buf[0]);
 }
 
 void vTsensorCommTimeoutTimerCallback( xTimerHandle pxTimer )

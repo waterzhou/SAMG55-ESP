@@ -109,7 +109,8 @@ VIRTUAL_DEV g_virtual_dev;
 uint8_t led_blinking_mode = LED_MODE_OFF;
 uint8_t uart_ready = 0;
 volatile int uart_beatheart = 0;
-
+extern uint8_t thermoIndex;
+extern uint8_t thermimage[96*46 + 6];
 
 void wifi_module_reset(void)
 {
@@ -225,7 +226,7 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 	}
 }
 
-static unsigned char sum8(unsigned char *A, unsigned char n)
+unsigned char sum8(unsigned char *A, unsigned char n)
 {
 	unsigned char i;
 	unsigned char checksum = 0;
@@ -299,7 +300,7 @@ static void serial_resp_out(uint8_t resp_id, uint8_t status)
 	//nm_uart_send(UART1, &buf[0], p - &buf[0]);
 }
 
-static void signal_to_wifi(uint8_t resp_id, uint8_t *data, uint8_t datalen)
+void signal_to_wifi(uint8_t *data, uint8_t index)
 {
 	static uint8_t resp_buf[256];
 	uint8_t *p = &resp_buf[0];
@@ -308,12 +309,12 @@ static void signal_to_wifi(uint8_t resp_id, uint8_t *data, uint8_t datalen)
 
 	*p++ = SERIAL_SOF;
 	*p++ = ENCRYPT_MODE;
-	*p++ = 1 + datalen;
-	*p++ = resp_id;
-
-	if((data != NULL) && (datalen > 0)) {
-		memcpy(p, data, datalen);
-		p = p + datalen;
+	*p++ = 124;
+	*p++ = 0x8a;
+	*p++ = index;
+	if((data != NULL)) {
+		memcpy(p, data + index*122, 122);
+		p = p + 122;
 	}
 	*p = sum8(&resp_buf[0], p - resp_buf);
 	p++;
@@ -321,6 +322,7 @@ static void signal_to_wifi(uint8_t resp_id, uint8_t *data, uint8_t datalen)
 	resp_out_data->len = p - resp_buf;
 	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
 }
+
 
 static void config_wifi_app_otau_url(void)
 {
@@ -408,9 +410,10 @@ static void startPicture(void)
 {
 	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get snapshot command.\r\n"));
 }
-static void simulate_sendback_temperature (uint8_t temperature)
+
+static void sendback_temperature ()
 {
-	static uint8_t resp_buf[8];
+	/*static uint8_t resp_buf[8];
 	uint8_t *p = &resp_buf[0];
 	static serial_out_pk_t resp_send_packet;
 	static serial_out_pk_t *resp_out_data = &resp_send_packet;
@@ -425,7 +428,7 @@ static void simulate_sendback_temperature (uint8_t temperature)
 	resp_out_data->buf = resp_buf;
 	resp_out_data->len = p - resp_buf;
 	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
-	//nm_uart_send(UART1, &buf[0], p - &buf[0]);
+	//nm_uart_send(UART1, &buf[0], p - &buf[0]);*/
 }
 
 static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
@@ -454,11 +457,17 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		}
 		case CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP:
 			startTemperature();
-			simulate_sendback_temperature(100);
+
 		break;
 		
 		case CUSTOMIZE_CMD_DEV_CTRL_GET_PIC:
 			startPicture();
+		break;
+		
+		case CUSTOMIZE_CMD_DEV_TEMP_RSP:
+			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("get wifi res for image\r\n"));
+			if (thermoIndex < 37)
+				signal_to_wifi(thermimage, thermoIndex++);
 		break;
 		
 		case CMD_PACKET_ERROR_RESP:
@@ -473,7 +482,7 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		case CUSTOMIZE_CMD_GET_SNAPSHOT:
 			IoT_DEBUG(IoT_DBG_INFO, ("Get device states.\r\n"));
 			//data_upload.led_state = led_state;
-			signal_to_wifi(CUSTOMIZE_CMD_GET_SNAPSHOT_RESP, &data_upload, sizeof(data_upload));
+			//signal_to_wifi(CUSTOMIZE_CMD_GET_SNAPSHOT_RESP, &data_upload, sizeof(data_upload));
 		break;
 		
 		case CUSTOMIZE_CMD_STATUS_REPORT:
@@ -674,7 +683,7 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 			if (uart_ready == 0)
 				return;
 			resp = CMD_INVALID_HEAD;
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("Invalid header received (0x%x).\r\n", *p));
+			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Invalid header received (0x%x).\r\n", *p));
 			serial_resp_out(CMD_PACKET_ERROR_RESP, resp);
 			return;
 		}
@@ -685,8 +694,8 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 
 		if(*(p + len) != crc) {
 			resp = CMD_CRC_ERROR;
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("Invalid CRC, Received CRC(0x%x), Calculated CRC(0x%x).\r\n", *(p + len), crc));
-			serial_resp_out(CMD_PACKET_ERROR_RESP, CMD_CRC_ERROR);
+			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Invalid CRC, Received CRC(0x%x), Calculated CRC(0x%x).\r\n", *(p + len), crc));
+			//serial_resp_out(CMD_PACKET_ERROR_RESP, CMD_CRC_ERROR);
 			return;
 		}
 		cmdid = *(p + 3);

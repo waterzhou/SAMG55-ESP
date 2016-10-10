@@ -105,8 +105,10 @@ typedef enum {
 #define CUSTOMIZE_CMD_DATA_UPLOAD_RESP		0X89
 #define CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP		0X0A
 #define CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP	0X8A
+#define CUSTOMIZE_CMD_DEV_TEMP_RSP		0X9A
 #define CUSTOMIZE_CMD_DEV_CTRL_GET_PIC		0X0B
 #define CUSTOMIZE_CMD_RECIPE_DOWN_RESP		0X8B
+
 
 #define CMD_PACKET_ERROR_RESP				(0x80 + 0x20) // Serial frame error response
 #define CMD_CONNECT							(0x01 + 0x20)
@@ -208,5 +210,7 @@ extern xQueueHandle serial_out_queue;
 void wifi_task(void *parameter);
 void wifi_in(void *parameter);
 void wifi_serial_init(uint32_t baudspeed);
+unsigned char sum8(unsigned char *A, unsigned char n);
+void signal_to_wifi(uint8_t *data, uint8_t index);
 
 #endif /* SERIAL_H_ */
