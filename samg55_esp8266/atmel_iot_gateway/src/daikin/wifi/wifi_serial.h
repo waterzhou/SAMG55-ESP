@@ -205,8 +205,9 @@ typedef struct _serial_out_pk {
 
 extern xQueueHandle serial_in_queue;
 extern xQueueHandle serial_out_queue;
-void serial_out(void *parameter);
-void serial_in(void *parameter);
-void winc1500_module_reset(void);
+void wifi_serial_out(void *parameter);
+void wifi_serial_in(void *parameter);
+void wifi_serial_init(uint32_t baudspeed);
+
 
 #endif /* SERIAL_H_ */

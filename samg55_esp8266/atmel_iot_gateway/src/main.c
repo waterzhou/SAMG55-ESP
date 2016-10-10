@@ -48,10 +48,9 @@
  */
 #include "asf.h"
 #include <string.h>
-#include "daikin/config/rtos.h"
 #include "debug.h"
-
-#include "daikin/wifi//wifi_serial.h"
+#include "daikin/wifi/wifi_serial.h"
+#include "daikin/thermo/temperature.h"
 
 
 #define STRING_EOL    "\r"
@@ -77,13 +76,14 @@
  * EEPROM/flash examples will use the blocking FreeRTOS API. */
 #define mainDEMONSTRATE_ASYNCHRONOUS_API        (0)
 
-/*Task configuration*/
-#define WIFI_TASK_PRIORITY     configMAX_PRIORITIES - 1
-#define WIFI_TASK_DELAY        (50 / portTICK_RATE_MS)
-#define WIFI_TASK_STACK_SIZE   (4096)
 
-#define WIFI_SERIAL_TASK_STACK_SIZE			(1024)
-#define WIFI_SERIAL_TASK_PRIORITY			(tskIDLE_PRIORITY + 3)
+
+#define WIFI_SERIAL_TASK_STACK_SIZE				(1024)
+#define WIFI_SERIAL_TASK_PRIORITY				(tskIDLE_PRIORITY + 2)
+
+#define TSENSOR_TASK_STACK_SIZE					(2048)
+#define TSENSOR_TASK_PRIORITY					(tskIDLE_PRIORITY + 1)
+
 
 
 /*-----------------------------------------------------------*/
@@ -127,8 +127,16 @@ int main(void){
 	//void create_dbg_sem();
 	create_dbg_sem();
 #endif
-			
-	IoT_xTaskCreate(serial_out, "serial_out", WIFI_SERIAL_TASK_STACK_SIZE, NULL, WIFI_SERIAL_TASK_PRIORITY, NULL);
+
+	if(xTaskCreate(wifi_serial_out, "wifi_task", WIFI_SERIAL_TASK_STACK_SIZE, NULL, WIFI_SERIAL_TASK_PRIORITY, NULL) != pdPASS)
+	{
+		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("wifi task create failed\r\n"));
+	}
+	
+	//task for processing temperature module data
+	/*if (xTaskCreate(sensor_task, "sensor_task", TSENSOR_TASK_STACK_SIZE, NULL, TSENSOR_TASK_PRIORITY, NULL)!=pdPASS){
+		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("sensor task create failed\r\n"));
+	}*/
 	
 	/* Start the RTOS scheduler. */
 	vTaskStartScheduler();
@@ -154,6 +162,9 @@ static void prvSetupHardware(void)
 	board_init();	
 	/* Prepare the console*/
 	configure_console();
+	
+	tSensor_serial_init();
+	wifi_serial_init(BIT_RATE_115200);
 	
 	puts(STRING_HEADER);
 }

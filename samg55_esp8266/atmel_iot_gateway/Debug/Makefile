@@ -105,10 +105,9 @@ SUBDIRS :=  \
 ../src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/ \
 ../src/config/ \
 ../src/daikin/config \
+../src/daikin/thermo \
 ../src/daikin/wifi \
-../src/IoT_SDK/gateway \
 ../src/misc \
-../src/IoT_SDK \
 ../src/daikin
 
 
@@ -143,6 +142,7 @@ C_SRCS +=  \
 ../src/ASF/thirdparty/freertos/freertos-7.3.0/source/queue.c \
 ../src/ASF/thirdparty/freertos/freertos-7.3.0/source/tasks.c \
 ../src/ASF/thirdparty/freertos/freertos-7.3.0/source/timers.c \
+../src/daikin/thermo/temperature.c \
 ../src/daikin/wifi/wifi_serial.c \
 ../src/main.c \
 ../src/misc/debug.c \
@@ -185,6 +185,7 @@ src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/heap_4.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/queue.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/tasks.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/timers.o \
+src/daikin/thermo/temperature.o \
 src/daikin/wifi/wifi_serial.o \
 src/main.o \
 src/misc/debug.o \
@@ -220,6 +221,7 @@ src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/heap_4.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/queue.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/tasks.o \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/timers.o \
+src/daikin/thermo/temperature.o \
 src/daikin/wifi/wifi_serial.o \
 src/main.o \
 src/misc/debug.o \
@@ -255,6 +257,7 @@ src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/heap_4.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/queue.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/tasks.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/timers.d \
+src/daikin/thermo/temperature.d \
 src/daikin/wifi/wifi_serial.d \
 src/main.d \
 src/misc/debug.d \
@@ -290,6 +293,7 @@ src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/heap_4.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/queue.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/tasks.d \
 src/ASF/thirdparty/freertos/freertos-7.3.0/source/timers.d \
+src/daikin/thermo/temperature.d \
 src/daikin/wifi/wifi_serial.d \
 src/main.d \
 src/misc/debug.d \
@@ -310,6 +314,8 @@ LINKER_SCRIPT_DEP+=  \
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
@@ -531,6 +537,13 @@ src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/memmang/%.o: ../src/A
 	@echo Finished building: $<
 	
 
+src/daikin/thermo/%.o: ../src/daikin/thermo/%.c
+	@echo Building file: $<
+	@echo Invoking: ARM/GNU C Compiler : 4.9.3
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMG55J19__ -DDEBUG -DARM_MATH_CM4=true -Dprintf=iprintf -D__FREERTOS__ -Dscanf=iscanf -DBOARD=SAMG55_XPLAINED_PRO -DCONF_MGMT  -I"../src" -I"../src/config" -I"../src/ASF/thirdparty/CMSIS/Include" -I"../src/ASF/thirdparty/CMSIS/Lib/GCC" -I"../src/ASF/thirdparty/freertos/freertos-7.3.0/source/include" -I"../src/ASF/thirdparty/freertos/freertos-7.3.0/source/portable/gcc/sam_cm4f" -I"../src/ASF/sam/boards" -I"../src/ASF/sam/boards/samg55_xplained_pro" -I"../src/ASF/sam/utils" -I"../src/ASF/sam/utils/fpu" -I"../src/ASF/sam/utils/header_files" -I"../src/ASF/sam/utils/preprocessor" -I"../src/ASF/sam/utils/cmsis/samg/samg55/include" -I"../src/ASF/sam/drivers/pdc" -I"../src/ASF/sam/drivers/pmc" -I"../src/ASF/sam/drivers/flexcom" -I"../src/ASF/sam/drivers/efc" -I"../src/ASF/sam/drivers/supc" -I"../src/ASF/sam/drivers/usart" -I"../src/ASF/sam/drivers/pio" -I"../src/ASF/sam/services/flash_efc" -I"../src/ASF/common/utils" -I"../src/ASF/common/boards" -I"../src/ASF/common/utils/stdio/stdio_serial" -I"../src/ASF/common/services/serial" -I"../src/ASF/common/services/serial/sam_uart" -I"../src/ASF/common/services/sleepmgr" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/services/freertos/sam" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/common/services/gpio" -I"../src/misc" -I"../src/ASF/sam/drivers/spi" -I"../src/ASF/common/services/spi/sam_spi" -I"../src/ASF/sam/drivers/rtc"  -O1 -fdata-sections -ffunction-sections -fdata-sections -mlong-calls -g3 -Wall -mcpu=cortex-m4 -c -pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare  -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations   -Wunreachable-code -Wcast-align  --param max-inline-insns-single=500 -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 src/daikin/wifi/%.o: ../src/daikin/wifi/%.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 4.9.3
@@ -577,7 +590,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: ARM/GNU Linker : 4.9.3
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="atmel_iot_gateway.map" -Wl,--start-group -larm_cortexM4lf_math  -Wl,--end-group -L"../cmsis/linkerScripts" -L"../src/ASF/thirdparty/CMSIS/Lib/GCC" -L"../src/ASF/sam/components/wifi/winc1500/smartconfig"  -Wl,--gc-sections -mcpu=cortex-m4 -Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/samg/samg55j19/gcc/flash.ld  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="atmel_iot_gateway.map" -Wl,--start-group -larm_cortexM4lf_math  -Wl,--end-group -L"../cmsis/linkerScripts" -L"../src/ASF/thirdparty/CMSIS/Lib/GCC"  -Wl,--gc-sections -mcpu=cortex-m4 -Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/samg/samg55j19/gcc/flash.ld  
 	@echo Finished building target: $@
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O binary "atmel_iot_gateway.elf" "atmel_iot_gateway.bin"
 	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "atmel_iot_gateway.elf" "atmel_iot_gateway.hex"

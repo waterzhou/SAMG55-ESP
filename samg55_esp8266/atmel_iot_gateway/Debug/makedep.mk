@@ -60,6 +60,8 @@ src\ASF\thirdparty\freertos\freertos-7.3.0\source\tasks.c
 
 src\ASF\thirdparty\freertos\freertos-7.3.0\source\timers.c
 
+src\daikin\thermo\temperature.c
+
 src\daikin\wifi\wifi_serial.c
 
 src\main.c

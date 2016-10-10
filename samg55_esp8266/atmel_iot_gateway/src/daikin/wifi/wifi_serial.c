@@ -109,8 +109,6 @@ uint8_t led_blinking_mode = LED_MODE_NONE;
 uint8_t uart_ready = 0;
 volatile int uart_beatheart = 0;
 
-void serial_init(uint32_t baudspeed);
-void USART1_Handler(void);
 
 void wifi_module_reset(void)
 {
@@ -143,7 +141,7 @@ static int byte2hexstrstr(const uint8_t *pBytes, uint32_t srcLen, uint8_t *pDstS
 	return srcLen * 2;
 }
 
-void serial_init(uint32_t baudspeed)
+void wifi_serial_init(uint32_t baudspeed)
 {
 	uint32_t rx_timeout = (SERIAL_FRAME_INTERVAL * baudspeed) / 1000;
 	sam_usart_opt_t usart_settings = {
@@ -605,7 +603,7 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wi-Fi return get uart cfg OK\r\n"));
 			if(uart_cfg_cmd.baud_index == 1)
 			{
-				serial_init(BIT_RATE_19200);
+				wifi_serial_init(BIT_RATE_19200);
 			}
 			break;
 		}
@@ -684,7 +682,7 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 	return;
 }
 
-void serial_in(void *parameter)
+void wifi_serial_in(void *parameter)
 {
 	serial_in_pk_t *in_data = NULL;
 	wifi_module_reset();
@@ -785,7 +783,7 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 	}
 }
 
-void serial_out(void *parameter)
+void wifi_serial_out(void *parameter)
 {
 	(void) parameter;
 	Pdc *p_pdc = NULL;
@@ -809,7 +807,7 @@ void serial_out(void *parameter)
 	}
 		
 	IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("serial_out task started\r\n"));
-	serial_init(BIT_RATE_9600);
+
 	
 	//uint8_t test_len = sizeof(dataupload_t);
 	//IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("test len: %d\r\n", test_len));
@@ -825,7 +823,7 @@ void serial_out(void *parameter)
 		while(true);
 	}
 	
-	IoT_xTaskCreate(serial_in, "serial_in", WIFI_RECV_TASK_STACK_SIZE, NULL, WIFI_RECV_TASK_PRIORITY, NULL);
+	IoT_xTaskCreate(wifi_serial_in, "wifi_serial_in", WIFI_RECV_TASK_STACK_SIZE, NULL, WIFI_RECV_TASK_PRIORITY, NULL);
 	
 	for(;;) {
 

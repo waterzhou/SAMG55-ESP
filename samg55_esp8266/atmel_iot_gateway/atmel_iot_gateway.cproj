@@ -666,10 +666,9 @@
     <Folder Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\portable\memmang\" />
     <Folder Include="src\config\" />
     <Folder Include="src\daikin\config" />
+    <Folder Include="src\daikin\thermo" />
     <Folder Include="src\daikin\wifi" />
-    <Folder Include="src\IoT_SDK\gateway" />
     <Folder Include="src\misc" />
-    <Folder Include="src\IoT_SDK" />
     <Folder Include="src\daikin" />
   </ItemGroup>
   <ItemGroup>
@@ -1286,6 +1285,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\daikin\config\rtos.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\daikin\thermo\temperature.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\daikin\thermo\temperature.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\daikin\wifi\wifi_serial.c">
