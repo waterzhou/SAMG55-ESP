@@ -103,9 +103,9 @@ typedef enum {
 #define CUSTOMIZE_CMD_GET_SNAPSHOT_RESP		0X88
 #define CUSTOMIZE_CMD_DATA_UPLOAD			0X09
 #define CUSTOMIZE_CMD_DATA_UPLOAD_RESP		0X89
-#define CUSTOMIZE_CMD_DEV_CTRL				0X0A
-#define CUSTOMIZE_CMD_DEV_CTRL_RESP			0X8A
-#define CUSTOMIZE_CMD_RECIPE_DOWN			0X0B
+#define CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP		0X0A
+#define CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP	0X8A
+#define CUSTOMIZE_CMD_DEV_CTRL_GET_PIC		0X0B
 #define CUSTOMIZE_CMD_RECIPE_DOWN_RESP		0X8B
 
 #define CMD_PACKET_ERROR_RESP				(0x80 + 0x20) // Serial frame error response
@@ -205,9 +205,8 @@ typedef struct _serial_out_pk {
 
 extern xQueueHandle serial_in_queue;
 extern xQueueHandle serial_out_queue;
-void wifi_serial_out(void *parameter);
-void wifi_serial_in(void *parameter);
+void wifi_task(void *parameter);
+void wifi_in(void *parameter);
 void wifi_serial_init(uint32_t baudspeed);
-
 
 #endif /* SERIAL_H_ */

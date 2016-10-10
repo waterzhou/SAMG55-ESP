@@ -78,8 +78,8 @@
 
 
 
-#define WIFI_SERIAL_TASK_STACK_SIZE				(1024)
-#define WIFI_SERIAL_TASK_PRIORITY				(tskIDLE_PRIORITY + 2)
+#define WIFI_SERIAL_TASK_STACK_SIZE				(2048)
+#define WIFI_SERIAL_TASK_PRIORITY				(tskIDLE_PRIORITY + 4)
 
 #define TSENSOR_TASK_STACK_SIZE					(2048)
 #define TSENSOR_TASK_PRIORITY					(tskIDLE_PRIORITY + 1)
@@ -128,15 +128,15 @@ int main(void){
 	create_dbg_sem();
 #endif
 
-	if(xTaskCreate(wifi_serial_out, "wifi_task", WIFI_SERIAL_TASK_STACK_SIZE, NULL, WIFI_SERIAL_TASK_PRIORITY, NULL) != pdPASS)
+	if(xTaskCreate(wifi_task, "wifi_task", WIFI_SERIAL_TASK_STACK_SIZE, NULL, WIFI_SERIAL_TASK_PRIORITY, NULL) != pdPASS)
 	{
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("wifi task create failed\r\n"));
 	}
 	
 	//task for processing temperature module data
-	/*if (xTaskCreate(sensor_task, "sensor_task", TSENSOR_TASK_STACK_SIZE, NULL, TSENSOR_TASK_PRIORITY, NULL)!=pdPASS){
+	if (xTaskCreate(sensor_task, "sensor_task", TSENSOR_TASK_STACK_SIZE, NULL, TSENSOR_TASK_PRIORITY, NULL)!=pdPASS){
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("sensor task create failed\r\n"));
-	}*/
+	}
 	
 	/* Start the RTOS scheduler. */
 	vTaskStartScheduler();

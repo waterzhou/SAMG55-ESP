@@ -60,13 +60,7 @@
 #define WIFI_DBG					IoT_DBG_ON
 #define LWIP_DBG					IoT_DBG_ON
 #define DOWNLOAD_DBG				IoT_DBG_ON
-#define CLOUD_API_DBG				IoT_DBG_ON
-#define JSON_DBG					IoT_DBG_ON
-#define POLARSSL_DBG				IoT_DBG_ON
-#define SSL_DBG						IoT_DBG_ON
 #define SERIAL_DBG					IoT_DBG_ON
-#define UPGRADE_DBG					IoT_DBG_ON
-#define ZIGBEE_DBG					IoT_DBG_ON
 #define IoT_DBG_MIN_LEVEL			IoT_DBG_INFO
 
 

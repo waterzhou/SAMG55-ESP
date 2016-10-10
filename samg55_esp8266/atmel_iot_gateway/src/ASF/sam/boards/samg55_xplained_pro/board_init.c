@@ -100,12 +100,11 @@ void system_board_init(void)
 
 	/* Initialize LED0, turned off */
 	ioport_set_pin_dir(LED_0_PIN, IOPORT_DIR_OUTPUT);
-	ioport_set_pin_level(LED_0_PIN, IOPORT_PIN_LEVEL_HIGH);
+	ioport_set_pin_level(LED_0_PIN, IOPORT_PIN_LEVEL_LOW);
 	
 	ioport_set_pin_dir(WINC_PIN_RESET, IOPORT_DIR_OUTPUT);
 	ioport_set_pin_level(WINC_PIN_RESET, IOPORT_PIN_LEVEL_HIGH);
-	ioport_set_pin_dir(WINC_PIN_CHIP_ENABLE, IOPORT_DIR_OUTPUT);
-	ioport_set_pin_level(WINC_PIN_CHIP_ENABLE, IOPORT_PIN_LEVEL_HIGH);
+
 
 	/* Initialize SW0 */
 	//ioport_set_pin_dir(BUTTON_0_PIN, IOPORT_DIR_INPUT);
@@ -134,30 +133,14 @@ void system_board_init(void)
 			PINS_USART4_FLAGS);
 #endif
 
-	//usart6 for zigbe serial
-	//ioport_set_port_peripheral_mode(PINS_USART6_PORT, PINS_USART6,
-	//		PINS_USART6_FLAGS);
+
 	
 	//usart0 for wifi serial	
-	ioport_set_port_peripheral_mode(PINS_USART0_PORT, PINS_USART0,
-		PINS_USART0_FLAGS);
-#ifdef CONF_BOARD_USART_RXD
-	/* Configure USART RXD pin */
-	//ioport_set_pin_peripheral_mode(EXT3_PIN_UART_RX,
-	//		IOPORT_MODE_MUX_B);
-#endif
+	ioport_set_port_peripheral_mode(PINS_USART0_PORT, PINS_USART0,PINS_USART0_FLAGS);
+		
+	// Temperature sensor UART
+	ioport_set_port_peripheral_mode(PINS_USART3_PORT, PINS_USART3, PINS_USART3_FLAGS);
 
-#ifdef CONF_BOARD_USART_TXD
-	/* Configure USART TXD pin */
-	//ioport_set_pin_peripheral_mode(EXT3_PIN_UART_TX,
-	//		IOPORT_MODE_MUX_B);
-#endif
-
-#ifdef CONF_BOARD_USART_SCK
-	/* Configure USART synchronous communication SCK pin */
-	ioport_set_pin_peripheral_mode(EXT3_PIN_8,
-			IOPORT_MODE_MUX_B);
-#endif
 
 #if defined(CONF_BOARD_SPI) || defined(CONF_BOARD_SD_MMC_SPI)
 	ioport_set_pin_peripheral_mode(SPI_MISO_GPIO, SPI_MISO_FLAGS);

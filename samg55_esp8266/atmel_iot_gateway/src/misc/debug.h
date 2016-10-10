@@ -43,7 +43,6 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#include "daikin/config/iot_config.h"
 
 /**
  * \name Wrappers for printing debug information
@@ -59,6 +58,7 @@
 #define IoT_DBG_SERIOUS			0x03
 #define IoT_DBG_INFO_I			0x04
 #define IoT_DBG_LEVEL_MASK		0x0f
+
 
 /** Flag for IoT_DEBUG to enable the debug message */
 #define IoT_DBG_ON            0x80U

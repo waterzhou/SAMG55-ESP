@@ -43,6 +43,7 @@
 #include "daikin/config/rtos.h"
 #include "misc/debug.h"
 #include "wifi_serial.h"
+//#include "daikin/thermo/temperature.h"
 
 xQueueHandle serial_in_queue = NULL;
 xQueueHandle serial_out_queue = NULL;
@@ -105,7 +106,7 @@ VIRTUAL_DEV g_virtual_dev;
 #define LED_MODE_ON					   3
 #define LED_MODE_OTAU				   4
 
-uint8_t led_blinking_mode = LED_MODE_NONE;
+uint8_t led_blinking_mode = LED_MODE_OFF;
 uint8_t uart_ready = 0;
 volatile int uart_beatheart = 0;
 
@@ -204,8 +205,7 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 		serial_recving = serial_recved;
 		serial_recved = ptemp;
 		serial_recved->len = recv_idx;
-		
-		//serial_recving->len = recv_idx;
+
 		recv_idx = 0;
 		usart_start_rx_timeout(WIFI_SERIAL_PORT);
 		IoT_xQueueSendFromISR(serial_in_queue, &serial_recved, &xHigherPriorityTaskWoken);
@@ -389,6 +389,35 @@ static void start_wifi_connect(void)
 	IoT_xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
 }
 
+static void startTemperature(void)
+{
+	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get temperature command.\r\n"));
+	//Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
+}
+static void startPicture(void)
+{
+	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get snapshot command.\r\n"));
+}
+static void simulate_sendback_temperature (uint8_t temperature)
+{
+	static uint8_t resp_buf[8];
+	uint8_t *p = &resp_buf[0];
+	static serial_out_pk_t resp_send_packet;
+	static serial_out_pk_t *resp_out_data = &resp_send_packet;
+
+	*p++ = SERIAL_SOF;
+	*p++ = ENCRYPT_MODE;
+	*p++ = 2;
+	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
+	*p++ = temperature;
+	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
+	p++;
+	resp_out_data->buf = resp_buf;
+	resp_out_data->len = p - resp_buf;
+	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
+	//nm_uart_send(UART1, &buf[0], p - &buf[0]);
+}
+
 static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 {
 	uint16_t len;
@@ -406,36 +435,25 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 	
 	switch(cmdid)
 	{
+		case CMD_WIFI_MODULE_READY:
+		{
+			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wi-Fi Module Ready!\r\n"));
+			uart_ready = 1;
+			led_blinking_mode = LED_MODE_ON;
+			break;
+		}
+		case CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP:
+			startTemperature();
+			simulate_sendback_temperature(100);
+		break;
+		
+		case CUSTOMIZE_CMD_DEV_CTRL_GET_PIC:
+			startPicture();
+		break;
+		
 		case CMD_PACKET_ERROR_RESP:
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Receive packet error response, err(%d).\r\n", *data));
+			IoT_DEBUG(IoT_DBG_INFO, ("Receive packet error response, err(%d).\r\n", *data));
 		break;
-
-		case CUSTOMIZE_CMD_DEV_CTRL:
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Receive control command.\r\n"));
-			g_virtual_dev.power = *(data + 2);
-			g_virtual_dev.work_mode = *(data + 3);
-			g_virtual_dev.temp_value = *(data + 4);
-			g_virtual_dev.light_value = *(data + 5);
-			g_virtual_dev.time_delay = *(data + 6);
-			if(g_virtual_dev.power == 0) {
-				LED_Off(LED0);
-				led_state = OFF;
-			}
-			else if(g_virtual_dev.power == 1) {
-				LED_On(LED0);
-				led_state = ON;
-			}
-			else {
-				IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("No such control command(0x%x).\r\n", *data));
-			}
-			signal_to_wifi(CUSTOMIZE_CMD_DEV_CTRL_RESP, &g_virtual_dev, sizeof(g_virtual_dev));
-
-		break;
-		
-		case CUSTOMIZE_CMD_RECIPE_DOWN_RESP:
-			signal_to_wifi(CUSTOMIZE_CMD_DEV_CTRL_RESP, data, datalen);
-		break;
-		
 		//case CUSTOMIZE_CMD_UUID_READ:
 			//IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Read UUID.\r\n"));
 			//uint8_t uuid[6] = {'4','K','D','3','R','C'};
@@ -443,7 +461,7 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		//break;
 		//
 		case CUSTOMIZE_CMD_GET_SNAPSHOT:
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Get device states.\r\n"));
+			IoT_DEBUG(IoT_DBG_INFO, ("Get device states.\r\n"));
 			//data_upload.led_state = led_state;
 			signal_to_wifi(CUSTOMIZE_CMD_GET_SNAPSHOT_RESP, &data_upload, sizeof(data_upload));
 		break;
@@ -452,13 +470,13 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		{
 			uint8_t states = *data;
 			if(states == 0) {
-				IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wifi disconnect.\r\n"));
+				IoT_DEBUG(IoT_DBG_INFO, ("Wifi disconnect.\r\n"));
 			}
 			else if(states == 1) {
-				IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wifi module in sniffer mode.\r\n"));
+				IoT_DEBUG(IoT_DBG_INFO, ("Wifi module in sniffer mode.\r\n"));
 			}
 			else if (states == 2) {
-				IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wifi module connect to wifi router.\r\n"));
+				IoT_DEBUG(IoT_DBG_INFO, ("Wifi module connect to wifi router.\r\n"));
 			}
 			else if(states == 3) {
 				IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wifi module connect to JD server.\r\n"));
@@ -531,15 +549,6 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 			break;
 		}
 		
-		case CMD_WIFI_MODULE_READY:
-		{
-			IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Wi-Fi Module Ready!\r\n"));
-			uart_ready = 1;
-			led_blinking_mode = LED_MODE_OFF;
-			LED_On(LED0);
-			led_state = ON;
-			break;
-		}
 		
 		case CMD_REQ_APP_OTAU_RESP:
 		{
@@ -682,11 +691,11 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 	return;
 }
 
-void wifi_serial_in(void *parameter)
+void wifi_in(void *parameter)
 {
 	serial_in_pk_t *in_data = NULL;
 	wifi_module_reset();
-	IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("serial_in task started\r\n"));
+	IoT_DEBUG(IoT_DBG_SERIOUS, ("wifi_in task started\r\n"));
 	for(;;) {
 		IoT_xQueueReceive(serial_in_queue, &in_data, portMAX_DELAY);
 		parse_serial_packet(in_data->buf, in_data->len);
@@ -783,14 +792,13 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 	}
 }
 
-void wifi_serial_out(void *parameter)
+void wifi_task(void *parameter)
 {
 	(void) parameter;
 	Pdc *p_pdc = NULL;
 	pdc_packet_t packet;
 	serial_out_pk_t *out_data = NULL;
-	//uint32_t pdc_status;
-	//uint8_t out_status;
+
 	
 	xConfigTimer = xTimerCreate("xConfigTimer", 1000 , pdTRUE, ( void * ) 0, vConfigModeCallback);
 	if(xConfigTimer == NULL ){
@@ -806,8 +814,7 @@ void wifi_serial_out(void *parameter)
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_SERIOUS, ("xLedModeTimer create failed.\r\n"));
 	}
 		
-	IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("serial_out task started\r\n"));
-
+	IoT_DEBUG(IoT_DBG_SERIOUS, ("serial_out task started\r\n"));
 	
 	//uint8_t test_len = sizeof(dataupload_t);
 	//IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("test len: %d\r\n", test_len));
@@ -823,7 +830,7 @@ void wifi_serial_out(void *parameter)
 		while(true);
 	}
 	
-	IoT_xTaskCreate(wifi_serial_in, "wifi_serial_in", WIFI_RECV_TASK_STACK_SIZE, NULL, WIFI_RECV_TASK_PRIORITY, NULL);
+	IoT_xTaskCreate(wifi_in, "wifi_in", WIFI_RECV_TASK_STACK_SIZE, NULL, WIFI_RECV_TASK_PRIORITY, NULL);
 	
 	for(;;) {
 
@@ -835,8 +842,7 @@ void wifi_serial_out(void *parameter)
 		uint8_t rbuf[128];
 		byte2hexstrstr(out_data->buf, out_data->len, rbuf, 128);
 		IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Serial OUT(%d): %s\r\n", out_data->len, rbuf));
-		
-		//IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("sending packet\r\n"));
+
 		packet.ul_addr = (uint32_t)out_data->buf;
 		packet.ul_size = out_data->len;
 		

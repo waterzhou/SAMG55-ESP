@@ -116,7 +116,7 @@ void system_board_init(void);
 #define LED0_FLAGS    (PIO_OUTPUT_1 | PIO_DEFAULT)
 
 #define LED0_PIN                  IOPORT_CREATE_PIN(PIOA, 30)
-#define LED0_ACTIVE_LEVEL         false
+#define LED0_ACTIVE_LEVEL         true
 #define LED0_INACTIVE_LEVEL       !LED0_ACTIVE_LEVEL
 /** @} */
 
@@ -153,7 +153,7 @@ void system_board_init(void);
 #define LED_0_ACTIVE              LED0_ACTIVE_LEVEL
 #define LED_0_INACTIVE            LED0_INACTIVE_LEVEL
 
-#define WINC_PIN_RESET				IOPORT_CREATE_PIN(PIOA, 25)
+#define WINC_PIN_RESET				IOPORT_CREATE_PIN(PIOB, 1)
 #define WINC_PIN_CHIP_ENABLE		IOPORT_CREATE_PIN(PIOA, 29)
 //#define CONF_WINC_PIN_WAKE				IOPORT_CREATE_PIN(PIOA, 25)
 
@@ -225,6 +225,16 @@ void system_board_init(void);
 #define PINS_USART0_ID     ID_PIOA
 #define PINS_USART0_TYPE   PIO_PERIPH_A
 #define PINS_USART0_ATTR   PIO_DEFAULT
+
+// For Temperature Sensor
+#define PINS_USART3        (PIO_PA3A_TXD3 | PIO_PA4A_RXD3)
+#define PINS_USART3_FLAGS  (IOPORT_MODE_MUX_A)
+#define PINS_USART3_PORT   IOPORT_PIOA
+#define PINS_USART3_MASK   (PIO_PA3A_TXD3 | PIO_PA4A_RXD3)
+#define PINS_USART3_PIO    PIOA
+#define PINS_USART3_ID     ID_PIOA
+#define PINS_USART3_TYPE   PIO_PERIPH_A
+#define PINS_USART3_ATTR   PIO_DEFAULT
 
 /** PCK1 pin definition (PA17) */
 #define PIN_PCK1         (PIO_PA17_IDX)

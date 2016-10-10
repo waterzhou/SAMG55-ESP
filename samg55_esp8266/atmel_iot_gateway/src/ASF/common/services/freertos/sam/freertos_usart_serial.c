@@ -274,7 +274,7 @@ freertos_usart_if freertos_usart_serial_init(Usart *p_usart,
 
 		/* Is the driver also going to receive? */
 		if (freertos_driver_parameters->receive_buffer != NULL) {
-			/* rx_event_semaphore is used to signal the arival of new data.  It
+			/* rx_event_semaphore is used to signal the arrival of new data.  It
 			must be a counting semaphore for the following reason:  If the Rx
 			DMA places data at the end of its circular buffer it will give the
 			semaphore to indicate the presence of unread data.  If it then
