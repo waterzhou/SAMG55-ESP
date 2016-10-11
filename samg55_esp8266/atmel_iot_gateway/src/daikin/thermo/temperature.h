@@ -98,17 +98,6 @@ typedef struct{
 }CommunicationError_t;
 
 
-typedef struct{
-	uint8_t mode;
-	uint16_t size;
-	GridEyeThermalImage_t			gridEyeThermalImage;
-	CorrectionDateImage_t			correctionDateImage;
-	HighResolutionThermalImage_t	highResolutionThermalImage;
-	HumanDetectionInfo_t			humanDetectionInfo[HUMAN_INFO_MAX];
-	CommunicationError_t			communicationError;
-	uint8_t payload[4416];
-}ThermalParam_t;
-
 void tSensor_serial_init(void);
 void resetTsensorCommStateMachine(void);
 void tSensor_handler(void);

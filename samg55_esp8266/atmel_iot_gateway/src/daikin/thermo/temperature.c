@@ -23,13 +23,12 @@ static uart_buff_t uartRecvBuff;
 static volatile bool uartRecvDataStartHandle = false;
 
 static uint8_t sendbuff[32];
-ThermalParam_t thermalParam;
+
 uint8_t thermimage[96*46 + 6];
 
 
 bool tsensorQueryWaitForHandling = false;
 TsensorDataQueryState_t tsensorDataQueryState = MEASUREMENT_INIT;
-bool tsensorDataWaitforHandling = false;
 
 
 
@@ -99,12 +98,14 @@ void tSensor_uart_isr_handler(void)
 	}else if(status & US_CSR_TIMEOUT) {
 		if (tempUartRecvBuff.len > 0){
 			// notice task to process
-			tsensorDataWaitforHandling = true;
-			printf("Get data from sensor..........%d\r\n", tempUartRecvBuff.len);
+			//printf("Get data from sensor..........%d\r\n", tempUartRecvBuff.len);
+			memcpy(&uartRecvBuff,&tempUartRecvBuff,tempUartRecvBuff.len + sizeof(uint16_t));
+			tempUartRecvBuff.len = 0;
 			xSemaphoreGiveFromISR(startTsensorProcessing, &higher_priority_task_woken);
 		}
 		//tempUartRecvBuff.len = 0;
 		usart_start_rx_timeout(TSENSOR_SERIAL_PORT);
+
 	}else if(status & US_CSR_ENDTX) {
 		p_pdc = usart_get_pdc_base(TSENSOR_SERIAL_PORT);
 		pdc_disable_transfer(p_pdc, PERIPH_PTCR_TXTDIS);
@@ -114,10 +115,7 @@ void tSensor_uart_isr_handler(void)
 	}
 }
 
-void resetTsensorCommStateMachine(void)
-{
-	uartStateMachine = UART_STATE_MACHINE_MODE_HEAD;
-}
+
 
 void distributePacket(uint8_t* totalPacket, uint16_t len)
 {
@@ -139,17 +137,15 @@ uint8_t thermoIndex = 0;
 void tSensor_handler(void)
 {
 
-	vPortEnterCritical();
-	memcpy(&uartRecvBuff,&tempUartRecvBuff,tempUartRecvBuff.len + sizeof(uint16_t));
-	tempUartRecvBuff.len = 0;
-	vPortExitCritical();
+	//vPortEnterCritical();
+	//vPortExitCritical();
 	
 	//xTimerStop(xTsensorCommTimeoutTimer, 0 );
-	printf("%6d(%d):",xTaskGetTickCount(), uartRecvBuff.len);
-	for (uint16_t i = 0; i < 3/*uartRecvBuff.len*/; i++){
-		/*uartDataParser(uartRecvBuff.payload[i]); */printf("%02X ",uartRecvBuff.payload[i]);
-	}
-	printf("\r\n");
+	printf("%6d(%d)\r\n",xTaskGetTickCount(), uartRecvBuff.len);
+	//for (uint16_t i = 0; i < 3/*uartRecvBuff.len*/; i++){
+	//	/*uartDataParser(uartRecvBuff.payload[i]); */printf("%02X ",uartRecvBuff.payload[i]);
+	//}
+	//printf("\r\n");
 	if (uartRecvBuff.payload[0] == 0xCC &&
 		uartRecvBuff.payload[1] == 0x80)
 		{
@@ -171,94 +167,7 @@ void tSensor_handler(void)
 
 
 
-static void uartDataParser(uint8_t data)
-{
-	static uint16_t count = 0;
-	switch(uartStateMachine){
-	case UART_STATE_MACHINE_SYMBOL_H:
-		if (data == THERMAL_TO_G55_SYMBOL){
-			uartStateMachine = UART_STATE_MACHINE_MODE_HEAD;
-		}
-		break;
-	case UART_STATE_MACHINE_MODE_HEAD:
-		if (   data == MODE_GRID_EYE_OUTPUT 
-			|| data == MODE_CORRECTION_DATA_IMAGE 
-			|| data == MODE_HIGH_RESULATION_THERMAL_IMAGE 
-			|| data == MODE_HUMAN_DETECTION_RESULT
-			|| data == MODE_COMMUNICATION_ERROR
-			){
-			thermalParam.mode = data;
-			uartStateMachine = UART_STATE_MACHINE_SIZE0;
-		}else{
-			uartStateMachine = UART_STATE_MACHINE_SYMBOL_H;
-		}
-		break;
-	case UART_STATE_MACHINE_SIZE0:
-		thermalParam.size = data;
-		uartStateMachine = UART_STATE_MACHINE_SIZE1;
-		break;
-	case UART_STATE_MACHINE_SIZE1:
-		if(data != 0){
-			thermalParam.size = thermalParam.size*data;
-		}
-		uartStateMachine = UART_STATE_MACHINE_DATA;
-		count = 0;
-		break;
-	case UART_STATE_MACHINE_DATA:
-		thermalParam.payload[count++] = data;
-		if (count >= thermalParam.size){
-			uartStateMachine = UART_STATE_MACHINE_SYMBOL_T;
-		}
-		break;
-	case UART_STATE_MACHINE_SYMBOL_T:
-		if (data == THERMAL_TO_G55_SYMBOL){
-			uartStateMachine = UART_STATE_MACHINE_MODE_TAIL;
-		}else{
-			uartStateMachine = UART_STATE_MACHINE_SYMBOL_H;
-		}
-		break;
-	case UART_STATE_MACHINE_MODE_TAIL:
-		if (thermalParam.mode == MODE_GRID_EYE_OUTPUT){
-			if (data == 0x3F){
-				memcpy(thermalParam.gridEyeThermalImage.pixel,thermalParam.payload,sizeof(GridEyeThermalImage_t));
-				uartStateMachine = UART_STATE_MACHINE_FINISHED;
-				break;
-			}
-		}else if (thermalParam.mode == MODE_CORRECTION_DATA_IMAGE){
-			if (data == 0x9F){
-				memcpy(thermalParam.correctionDateImage.correctionDateImage,thermalParam.payload,sizeof(CorrectionDateImage_t));
-				uartStateMachine = UART_STATE_MACHINE_FINISHED;
-				break;
-			}
-		}else if (thermalParam.mode == MODE_HIGH_RESULATION_THERMAL_IMAGE){
-			if (data == 0x8F){
-				memcpy(thermalParam.highResolutionThermalImage.pixel,thermalParam.payload,sizeof(HighResolutionThermalImage_t));
-				uartStateMachine = UART_STATE_MACHINE_FINISHED;
-				break;
-			}
-		}else if (thermalParam.mode == MODE_HUMAN_DETECTION_RESULT){
-			if (data == 0x9F){
-				memcpy((uint8_t *)&thermalParam.humanDetectionInfo[0],thermalParam.payload,thermalParam.size);
-				uartStateMachine = UART_STATE_MACHINE_FINISHED;
-				break;
-			}
-		}else if (thermalParam.mode == MODE_COMMUNICATION_ERROR){
-			if (data == 0xEF){
-				memcpy((uint8_t *)&thermalParam.communicationError,thermalParam.payload,sizeof(CommunicationError_t));
-				uartStateMachine = UART_STATE_MACHINE_FINISHED;
-				break;
-			}
-		}
-		uartStateMachine = UART_STATE_MACHINE_SYMBOL_H;
-		break;
-	case UART_STATE_MACHINE_FINISHED:
-		// Received Finished ready for handling
-		break;
-	default:
-		uartStateMachine = UART_STATE_MACHINE_SYMBOL_H;
-		break;
-	}
-}
+
 
 void sendToTsensorUart(uint8_t *buff, int32_t buffSize)
 {
@@ -299,43 +208,7 @@ void Temp_Measure_Get_Air_Condition_Info(uint8_t roomTemperature, uint8_t roomHu
 	sendToTsensorUart(sendbuff, 8);
 }
 
-void sendback_thermo_image_data ()
-{
-	/*static uint8_t resp_buf[8];
-	uint8_t *p = &resp_buf[0];
-	static serial_out_pk_t resp_send_packet;
-	static serial_out_pk_t *resp_out_data = &resp_send_packet;
 
-	*p++ = SERIAL_SOF;
-	*p++ = ENCRYPT_MODE;
-	*p++ = 2;
-	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
-	*p++ = temperature;
-	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
-	p++;
-	resp_out_data->buf = resp_buf;
-	resp_out_data->len = p - resp_buf;
-	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);*/
-	//nm_uart_send(UART1, &buf[0], p - &buf[0]);
-}
-
-void vTsensorCommTimeoutTimerCallback( xTimerHandle pxTimer )
-{
-	resetTsensorCommStateMachine();
-}
-
-void vxTsensorDataQueryTimerCallback( xTimerHandle pxTimer )
-{
-	printf("Trigger semaphore for sensor2..................\r\n");
-	xSemaphoreGive( startTsensorProcessing );
-	//tsensorQueryWaitForHandling = true;
-}
-
-void vTsensorNoRspTimeoutTimerCallback( xTimerHandle pxTimer )
-{
-	xTimerChangePeriod( xTsensorDataQueryTimer, TSENSOR_DATA_QUERY_INIT_INTERVAL, 0 );
-	tsensorDataQueryState = MEASUREMENT_INIT;
-}
 
 void sensor_task( void *pvParameters)
 {
@@ -344,69 +217,10 @@ void sensor_task( void *pvParameters)
 		printf("Failed to create Semaphore: startTsensorProcessing \r\n");
 	}
 	
-	xTsensorCommTimeoutTimer = xTimerCreate("TTTimer", TSENSOR_UART_TIMEOUT_INTERVAL , pdFALSE, ( void * ) 0, vTsensorCommTimeoutTimerCallback);
-	if(xTsensorCommTimeoutTimer == NULL ){
-		printf("Failed to create xTsensorCommTimeoutTimer \r\n");
-	}
-	
-	xTsensorDataQueryTimer = xTimerCreate("QTimer", TSENSOR_DATA_QUERY_INIT_INTERVAL , pdTRUE, ( void * ) 0, vxTsensorDataQueryTimerCallback);
-	if(xTsensorDataQueryTimer != NULL ){
-		//xTimerStart(xTsensorDataQueryTimer, 0 );
-	}else{
-		printf("Failed to create xTsensorDataQueryTimer \r\n");
-	}
-	
-	xTsensorNoRspTimeoutTimer = xTimerCreate("TNSPTimer", TSENSOR_NO_RSP_TIMEOUT_INTERVAL , pdFALSE, ( void * ) 0, vTsensorNoRspTimeoutTimerCallback);
-	if(xTsensorNoRspTimeoutTimer == NULL ){
-		printf("Failed to create xTsensorDataQueryTimer \r\n");
-	}else{
-		
-	}
 	
 	for(;;) {
 		//vTaskDelay(1000);
 		xSemaphoreTake(startTsensorProcessing, portMAX_DELAY);
-		//printf("taskTSensor invoked\r\n");
-		/*if (tsensorQueryWaitForHandling){
-			tsensorQueryWaitForHandling = false;
-			switch(tsensorDataQueryState){
-				case MEASUREMENT_INIT:
-				Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
-				printf("%06d:MEASUREMENT_INIT\r\n",xTaskGetTickCount());
-				tsensorDataQueryState= MEASUREMENT_START;
-				xTimerStart(xTsensorNoRspTimeoutTimer, 0 );// start received data state
-				break;
-				case MEASUREMENT_START:
-				Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
-				printf("%06d:MEASUREMENT_START\r\n",xTaskGetTickCount());
-				tsensorDataQueryState= MEASUREMENT_INIT_QUERY_AIR_INFO;
-				break;
-				case MEASUREMENT_INIT_QUERY_AIR_INFO:
-				Temp_Measure_Get_Air_Condition_Info(0x00, 50);
-				printf("%06d:MEASUREMENT_INIT_QUERY_AIR_INFO\r\n",xTaskGetTickCount());
-				tsensorDataQueryState= MEASUREMENT_QUERY_AIR_INFO;
-				xTimerChangePeriod( xTsensorDataQueryTimer, TSENSOR_DATA_QUERY_INTERVAL, 0 );
-				break;
-				case MEASUREMENT_QUERY_AIR_INFO:
-				Temp_Measure_Get_Air_Condition_Info(0x00, 50);
-				printf("%06d:MEASUREMENT_QUERY_AIR_INFO\r\n",xTaskGetTickCount());
-				break;
-				case MEASUREMENT_STOP:
-				Temp_Measure_Command_Send(SENSATION_MEASUREMENT_STOP);
-				printf("%06d:MEASUREMENT_STOP\r\n",xTaskGetTickCount());
-				break;
-				default:
-				tsensorDataQueryState= MEASUREMENT_INIT;
-				break;
-			}
-		}*/
-		if (tsensorDataWaitforHandling){
-			//printf("%06d:Received\r\n",xTaskGetTickCount());
-			tsensorDataWaitforHandling = false;
-			//xTimerStop(xTsensorNoRspTimeoutTimer, 0 );
-			//xTimerStart(xTsensorNoRspTimeoutTimer, 0 );
-			tSensor_handler();
-		}
-		
+		tSensor_handler();	
 	}
 }

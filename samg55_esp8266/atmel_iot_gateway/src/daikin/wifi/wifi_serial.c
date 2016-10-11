@@ -210,7 +210,7 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 
 		recv_idx = 0;
 		usart_start_rx_timeout(WIFI_SERIAL_PORT);
-		IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Wifi receive data timeout............\r\n"));
+		//IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Wifi receive data timeout............\r\n"));
 		IoT_xQueueSendFromISR(serial_in_queue, &serial_recved, &xHigherPriorityTaskWoken);
 		if(xHigherPriorityTaskWoken != pdFALSE) {
 			IoT_vPortYieldFromISR();
@@ -393,12 +393,10 @@ static void start_wifi_connect(void)
 	IoT_xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
 }
 extern xSemaphoreHandle startTsensorProcessing;
-extern bool tsensorDataWaitforHandling;
+
 static void startTemperature(void)
 {
 	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get temperature command.\r\n"));
-	//xSemaphoreGive( startTsensorProcessing );
-	//tsensorDataWaitforHandling = true;
 		
 	Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
 	delay_ms(500);
@@ -859,8 +857,8 @@ void wifi_task(void *parameter)
 		IoT_xQueueReceive(serial_out_queue, &out_data, portMAX_DELAY);
 		
 		uint8_t rbuf[128];
-		byte2hexstrstr(out_data->buf, out_data->len, rbuf, 128);
-		IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Serial OUT(%d): %s\r\n", out_data->len, rbuf));
+		//byte2hexstrstr(out_data->buf, out_data->len, rbuf, 128);
+		IoT_DEBUG(SERIAL_DBG | IoT_DBG_INFO, ("Serial OUT(%d)\r\n", out_data->len));
 
 		packet.ul_addr = (uint32_t)out_data->buf;
 		packet.ul_size = out_data->len;
