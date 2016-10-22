@@ -146,6 +146,7 @@ void tSensor_handler(void)
 	//	/*uartDataParser(uartRecvBuff.payload[i]); */printf("%02X ",uartRecvBuff.payload[i]);
 	//}
 	//printf("\r\n");
+	// CC 80 is for target thermal image data, so once got it send measure stop command back.
 	if (uartRecvBuff.payload[0] == 0xCC &&
 		uartRecvBuff.payload[1] == 0x80)
 		{

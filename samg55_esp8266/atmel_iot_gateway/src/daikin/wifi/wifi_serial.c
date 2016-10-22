@@ -157,8 +157,8 @@ void wifi_serial_init(uint32_t baudspeed)
 	flexcom_set_opmode(WIFI_SERIAL_PORT_FLEXCOM, FLEXCOM_USART);
 	
 	/* Configure USART */
-	usart_init_rs232(WIFI_SERIAL_PORT, &usart_settings,
-	sysclk_get_peripheral_hz());
+	usart_init_rs232(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
+	//usart_init_hw_handshaking(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
 	
 	usart_set_rx_timeout(WIFI_SERIAL_PORT, rx_timeout);
 	
@@ -309,7 +309,7 @@ void signal_to_wifi(uint8_t *data, uint8_t index)
 
 	*p++ = SERIAL_SOF;
 	*p++ = ENCRYPT_MODE;
-	*p++ = 124;
+	*p++ = 124;//数据长度 + 命令字1 + index
 	*p++ = 0x8a;
 	*p++ = index;
 	if((data != NULL)) {
@@ -393,11 +393,35 @@ static void start_wifi_connect(void)
 	IoT_xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
 }
 extern xSemaphoreHandle startTsensorProcessing;
+static void sendback_temperature ()
+{
+	static uint8_t resp_buf[256];
+	//memset(resp_buf, 0xff, 256);
+	for(int i = 0; i<256; i++)
+		resp_buf[i] = i;
+	uint8_t *p = &resp_buf[0];
+	static serial_out_pk_t resp_send_packet;
+	static serial_out_pk_t *resp_out_data = &resp_send_packet;
 
+	/**p++ = SERIAL_SOF;
+	*p++ = ENCRYPT_MODE;
+	*p++ = 2;
+	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
+	//*p++ = temperature;
+	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
+	p++;*/
+	
+	resp_out_data->buf = resp_buf;
+	resp_out_data->len = 256;
+	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
+	//nm_uart_send(UART1, &buf[0], p - &buf[0]);*/
+}
 static void startTemperature(void)
 {
 	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get temperature command.\r\n"));
-		
+	//Just for test for flow control
+	//sendback_temperature();
+	//return;	
 	Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
 	delay_ms(500);
 	Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
@@ -409,25 +433,7 @@ static void startPicture(void)
 	IoT_DEBUG(IoT_DBG_ON | IoT_DBG_INFO, ("Receive get snapshot command.\r\n"));
 }
 
-static void sendback_temperature ()
-{
-	/*static uint8_t resp_buf[8];
-	uint8_t *p = &resp_buf[0];
-	static serial_out_pk_t resp_send_packet;
-	static serial_out_pk_t *resp_out_data = &resp_send_packet;
 
-	*p++ = SERIAL_SOF;
-	*p++ = ENCRYPT_MODE;
-	*p++ = 2;
-	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
-	*p++ = temperature;
-	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
-	p++;
-	resp_out_data->buf = resp_buf;
-	resp_out_data->len = p - resp_buf;
-	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
-	//nm_uart_send(UART1, &buf[0], p - &buf[0]);*/
-}
 
 static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 {
@@ -776,8 +782,8 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 			led_blinking_mode = LED_MODE_ON;
 		}
 		else {
-			//IoT_DEBUG(GENERIC_DBG | IoT_DBG_INFO, ("enter test command mode\r\n"));
-			//button_mode = ENTER_GENERAL_MODE;
+			IoT_DEBUG(GENERIC_DBG | IoT_DBG_INFO, ("enter test command mode\r\n"));
+			button_mode = ENTER_GENERAL_MODE;
 		}
 	}
 	else{
@@ -792,14 +798,7 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 		}
 		else if (button_mode == ENTER_GENERAL_MODE){
 			IoT_DEBUG(GENERIC_DBG | IoT_DBG_INFO, ("perform test command mode\r\n"));
-			//uart_cfg_cmd.baud_index = 1;
-			//uart_cfg_cmd.flow_ctrl = 0;
-			//pkt_len = form_serial_packet(CUSTOMIZE_CMD_CHANGE_UART_CFG, &uart_cfg_cmd, sizeof(uart_cfg_cmd), pkt_buf);
-			//out_data->buf = pkt_buf;
-			//out_data->len = pkt_len;
-			//IoT_xQueueSend(serial_out_queue, &out_data, 0);
-			auto_states_upload();
-			
+			startTemperature();			
 		}
 		IoT_vPortEnterCritical();
 		count = 0;
