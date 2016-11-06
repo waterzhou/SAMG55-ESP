@@ -49,8 +49,12 @@
 #include "asf.h"
 #include <string.h>
 #include "debug.h"
+#include "ui.h"
+#include "uhd.h"
 #include "daikin/wifi/wifi_serial.h"
 #include "daikin/thermo/temperature.h"
+#include "daikin/camera/camera.h"
+
 
 
 #define STRING_EOL    "\r"
@@ -84,6 +88,8 @@
 #define TSENSOR_TASK_STACK_SIZE					(2048)
 #define TSENSOR_TASK_PRIORITY					(tskIDLE_PRIORITY + 1)
 
+#define TCAMERA_TASK_STACK_SIZE					(2048)
+#define TCAMERA_TASK_PRIORITY					(tskIDLE_PRIORITY + 1)
 
 
 /*-----------------------------------------------------------*/
@@ -134,9 +140,15 @@ int main(void){
 	}
 	
 	//task for processing temperature module data
-	if (xTaskCreate(sensor_task, "sensor_task", TSENSOR_TASK_STACK_SIZE, NULL, TSENSOR_TASK_PRIORITY, NULL)!=pdPASS){
+	if (xTaskCreate(sensor_task, "sensor_task", TSENSOR_TASK_STACK_SIZE, NULL, TSENSOR_TASK_PRIORITY, NULL)!=pdPASS)
+	{
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("sensor task create failed\r\n"));
 	}
+	//task for processing camera module data
+	/*if (xTaskCreate(camera_task, "camera_task", TCAMERA_TASK_STACK_SIZE, NULL, TCAMERA_TASK_PRIORITY, NULL)!=pdPASS)
+	{
+		IoT_DEBUG(GENERIC_DBG | IoT_DBG_WARNING, ("camera task create failed\r\n"));
+	}*/
 	
 	/* Start the RTOS scheduler. */
 	vTaskStartScheduler();
@@ -163,9 +175,16 @@ static void prvSetupHardware(void)
 	/* Prepare the console*/
 	configure_console();
 	
+	//For thhermal board, no flow control so just 115200
 	tSensor_serial_init();
-	wifi_serial_init(BIT_RATE_115200);
-	
+	//wifi_serial_init(BIT_RATE_230400);
+	wifi_serial_init(BIT_RATE_3686400);
+	//For camera, usb cdc
+	/* Initialize the user interface */
+	//ui_init();
+	/* Start USB host stack */
+	//uhc_start();
+
 	puts(STRING_HEADER);
 }
 

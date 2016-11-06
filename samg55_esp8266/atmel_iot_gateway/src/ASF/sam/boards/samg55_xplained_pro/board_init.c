@@ -136,7 +136,12 @@ void system_board_init(void)
 
 	
 	//usart0 for wifi serial	
-	ioport_set_port_peripheral_mode(PINS_USART0_PORT, PINS_USART0,PINS_USART0_FLAGS);
+	//ioport_set_port_peripheral_mode(PINS_USART0_PORT, PINS_USART0,PINS_USART0_FLAGS);
+		ioport_set_pin_peripheral_mode(USART0_RXD_GPIO, USART0_RXD_FLAGS);
+		ioport_set_pin_peripheral_mode(USART0_TXD_GPIO, USART0_TXD_FLAGS);
+		//ioport_set_pin_peripheral_mode(USART0_SCK_GPIO, USART0_SCK_FLAGS);
+		ioport_set_pin_peripheral_mode(USART0_CTS_GPIO, USART0_CTS_FLAGS);
+		ioport_set_pin_peripheral_mode(USART0_RTS_GPIO, USART0_RTS_FLAGS);
 		
 	// Temperature sensor UART
 	ioport_set_port_peripheral_mode(PINS_USART3_PORT, PINS_USART3, PINS_USART3_FLAGS);

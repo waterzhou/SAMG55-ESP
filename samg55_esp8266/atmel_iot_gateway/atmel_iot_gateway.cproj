@@ -43,6 +43,7 @@
           <option id="sam.drivers.pmc" value="Add" config="" content-id="Atmel.ASF" />
           <option id="sam.drivers.rtc" value="Add" config="" content-id="Atmel.ASF" />
           <option id="thirdparty.os.freertos.version" value="Add" config="7.3.0" content-id="Atmel.ASF" />
+          <option id="common.services.usb.class.host" value="Add" config="cdc" content-id="Atmel.ASF" />
           <option id="common.services.freertos.peripheral_control" value="Add" config="" content-id="Atmel.ASF" />
           <option id="config.common.services.freertos.peripheral_control.spi" value="Add" config="no" content-id="Atmel.ASF" />
           <option id="config.common.services.freertos.peripheral_control.twi" value="Add" config="no" content-id="Atmel.ASF" />
@@ -69,6 +70,7 @@
           <configuration key="config.compiler.armgcc.scanf" value="iscanf" default="iscanf" content-id="Atmel.ASF" />
           <configuration key="config.sam.pio.pio_handler" value="yes" default="yes" content-id="Atmel.ASF" />
           <configuration key="config.spi_master_type" value="standard_spi" default="standard_spi" content-id="Atmel.ASF" />
+          <configuration key="config.sam.drivers.uhp.sleepmgr" value="with_sleepmgr" default="with_sleepmgr" content-id="Atmel.ASF" />
         </configurations>
         <files>
           <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
@@ -290,6 +292,22 @@
           <file path="src/ASF/common/services/gpio/gpio.h" framework="" version="3.21.0" source="common\services\gpio\gpio.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam/drivers/rtc/rtc.c" framework="" version="3.21.0" source="sam\drivers\rtc\rtc.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/ASF/sam/drivers/rtc/rtc.h" framework="" version="3.21.0" source="sam\drivers\rtc\rtc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/matrix/matrix.c" framework="" version="3.21.0" source="sam\drivers\matrix\matrix.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/matrix/matrix.h" framework="" version="3.21.0" source="sam\drivers\matrix\matrix.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/usb_atmel.h" framework="" version="3.21.0" source="common\services\usb\usb_atmel.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/usb_protocol.h" framework="" version="3.21.0" source="common\services\usb\usb_protocol.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h" framework="" version="3.21.0" source="common\services\usb\class\cdc\usb_protocol_cdc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/class/cdc/host/uhi_cdc.c" framework="" version="3.21.0" source="common\services\usb\class\cdc\host\uhi_cdc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/class/cdc/host/uhi_cdc.h" framework="" version="3.21.0" source="common\services\usb\class\cdc\host\uhi_cdc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/Config/conf_usb_host.h" framework="" version="3.21.0" source="common\services\usb\class\cdc\host\module_config\conf_usb_host.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/uhc/uhc.c" framework="" version="3.21.0" source="common\services\usb\uhc\uhc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/uhc/uhc.h" framework="" version="3.21.0" source="common\services\usb\uhc\uhc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/uhc/uhd.h" framework="" version="3.21.0" source="common\services\usb\uhc\uhd.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/services/usb/uhc/uhi.h" framework="" version="3.21.0" source="common\services\usb\uhc\uhi.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/uhp/uhp_host.c" framework="" version="3.21.0" source="sam\drivers\uhp\uhp_host.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/uhp/ohci/ohci_hcd.c" framework="" version="3.21.0" source="sam\drivers\uhp\ohci\ohci_hcd.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/uhp/ohci/ohci.h" framework="" version="3.21.0" source="sam\drivers\uhp\ohci\ohci.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/sam/drivers/uhp/ohci/ohci_hcd.h" framework="" version="3.21.0" source="sam\drivers\uhp\ohci\ohci_hcd.h" changed="False" content-id="Atmel.ASF" />
         </files>
         <documentation help="http://asf.atmel.com/docs/3.21.0/common.services.freertos.peripheral_control.samg55_xplained_pro/html/index.html" />
         <offline-documentation help="" />
@@ -346,6 +364,7 @@
       <Value>__FREERTOS__</Value>
       <Value>scanf=iscanf</Value>
       <Value>BOARD=SAMG55_XPLAINED_PRO</Value>
+      <Value>UHD_ENABLE</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.DefaultIncludePath>False</armgcc.compiler.directories.DefaultIncludePath>
@@ -391,6 +410,12 @@
       <Value>../src/ASF/common/services/delay</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/sam/drivers/rtc</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -412,7 +437,18 @@
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
   <armgcc.linker.miscellaneous.LinkerFlags>-Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/samg/samg55j19/gcc/flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
-  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=SAMG55_XPLAINED_PRO -D__FREERTOS__ -D__SAMG55J19__ -Dprintf=iprintf -Dscanf=iscanf</armgcc.preprocessingassembler.general.AssemblerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/Config</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
+  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=SAMG55_XPLAINED_PRO -D__FREERTOS__ -D__SAMG55J19__ -Dprintf=iprintf -Dscanf=iscanf -DUHD_ENABLE</armgcc.preprocessingassembler.general.AssemblerFlags>
   <armgcc.preprocessingassembler.general.DefaultIncludePath>False</armgcc.preprocessingassembler.general.DefaultIncludePath>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
@@ -456,6 +492,12 @@
       <Value>../src/ASF/common/services/delay</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/sam/drivers/rtc</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
 </ArmGcc>
@@ -477,6 +519,7 @@
       <Value>__FREERTOS__</Value>
       <Value>scanf=iscanf</Value>
       <Value>BOARD=SAMG55_XPLAINED_PRO</Value>
+      <Value>UHD_ENABLE</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.DefaultIncludePath>False</armgcc.compiler.directories.DefaultIncludePath>
@@ -518,6 +561,13 @@
       <Value>../src/ASF/sam/drivers/spi</Value>
       <Value>../src/ASF/common/services/spi/sam_spi</Value>
       <Value>../src/ASF/sam/drivers/rtc</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
+      <Value>../src/ASF/common/services/clock/samg</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -542,8 +592,19 @@
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
   <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/samg/samg55j19/gcc/flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
+  <armgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/Config</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
+    </ListValues>
+  </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
-  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=SAMG55_XPLAINED_PRO -D__FREERTOS__ -D__SAMG55J19__ -Dprintf=iprintf -Dscanf=iscanf</armgcc.preprocessingassembler.general.AssemblerFlags>
+  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=SAMG55_XPLAINED_PRO -D__FREERTOS__ -D__SAMG55J19__ -Dprintf=iprintf -Dscanf=iscanf -DUHD_ENABLE</armgcc.preprocessingassembler.general.AssemblerFlags>
   <armgcc.preprocessingassembler.general.DefaultIncludePath>False</armgcc.preprocessingassembler.general.DefaultIncludePath>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
@@ -587,6 +648,12 @@
       <Value>../src/ASF/common/services/delay</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/sam/drivers/rtc</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/host</Value>
+      <Value>../src/ASF/common/services/usb/uhc</Value>
+      <Value>../src/ASF/sam/drivers/uhp</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -613,6 +680,11 @@
     <Folder Include="src\ASF\common\services\serial\sam_uart\" />
     <Folder Include="src\ASF\common\services\sleepmgr\" />
     <Folder Include="src\ASF\common\services\sleepmgr\sam\" />
+    <Folder Include="src\ASF\common\services\usb\" />
+    <Folder Include="src\ASF\common\services\usb\class\" />
+    <Folder Include="src\ASF\common\services\usb\class\cdc\" />
+    <Folder Include="src\ASF\common\services\usb\class\cdc\host\" />
+    <Folder Include="src\ASF\common\services\usb\uhc\" />
     <Folder Include="src\ASF\common\utils\" />
     <Folder Include="src\ASF\common\utils\interrupt\" />
     <Folder Include="src\ASF\common\utils\stdio\" />
@@ -623,12 +695,15 @@
     <Folder Include="src\ASF\sam\drivers\" />
     <Folder Include="src\ASF\sam\drivers\efc\" />
     <Folder Include="src\ASF\sam\drivers\flexcom\" />
+    <Folder Include="src\ASF\sam\drivers\matrix\" />
     <Folder Include="src\ASF\sam\drivers\pdc\" />
     <Folder Include="src\ASF\sam\drivers\pdc\pdc_uart_example\" />
     <Folder Include="src\ASF\sam\drivers\pio\" />
     <Folder Include="src\ASF\sam\drivers\pmc\" />
     <Folder Include="src\ASF\sam\drivers\rtc\" />
     <Folder Include="src\ASF\sam\drivers\supc\" />
+    <Folder Include="src\ASF\sam\drivers\uhp\" />
+    <Folder Include="src\ASF\sam\drivers\uhp\ohci\" />
     <Folder Include="src\ASF\sam\drivers\usart\" />
     <Folder Include="src\ASF\sam\utils\" />
     <Folder Include="src\ASF\sam\utils\cmsis\" />
@@ -666,16 +741,71 @@
     <Folder Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\portable\memmang\" />
     <Folder Include="src\config\" />
     <Folder Include="src\daikin\config" />
+    <Folder Include="src\daikin\camera" />
     <Folder Include="src\daikin\thermo" />
     <Folder Include="src\daikin\wifi" />
     <Folder Include="src\misc" />
     <Folder Include="src\daikin" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\daikin\camera\camera.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\daikin\camera\camera.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\uart_sam.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ui.h">
+      <SubType>compile</SubType>
+    </Compile>
     <None Include="src\ASF\common\services\gpio\sam_gpio\sam_gpio.h">
       <SubType>compile</SubType>
     </None>
     <None Include="src\ASF\common\services\gpio\gpio.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\usb_atmel.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\usb_protocol.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\class\cdc\usb_protocol_cdc.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\usb\class\cdc\host\conf_example.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\common\services\usb\class\cdc\host\uhi_cdc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\services\usb\class\cdc\host\uhi_cdc.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\usb\class\cdc\host\ui.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\common\services\usb\uhc\uhc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\services\usb\uhc\uhc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\uhc\uhd.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\uhc\uhi.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\sam\drivers\matrix\matrix.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam\drivers\matrix\matrix.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\ASF\sam\drivers\rtc\rtc.c">
@@ -684,6 +814,18 @@
     <None Include="src\ASF\sam\drivers\rtc\rtc.h">
       <SubType>compile</SubType>
     </None>
+    <None Include="src\ASF\sam\drivers\uhp\ohci\ohci.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\sam\drivers\uhp\ohci\ohci_hcd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam\drivers\uhp\ohci\ohci_hcd.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\sam\drivers\uhp\uhp_host.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\config\conf_server.h">
       <SubType>compile</SubType>
     </Compile>
@@ -1278,6 +1420,9 @@
     <Compile Include="src\ASF\thirdparty\freertos\freertos-7.3.0\source\timers.c">
       <SubType>compile</SubType>
     </Compile>
+    <None Include="src\config\conf_usb_host.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\daikin\config\iot_config.h">
       <SubType>compile</SubType>
     </Compile>

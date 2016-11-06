@@ -2,7 +2,23 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\daikin\camera\camera.c
+
+src\uart_sam.c
+
+src\ASF\common\services\usb\class\cdc\host\uhi_cdc.c
+
+src\ASF\common\services\usb\class\cdc\host\ui.c
+
+src\ASF\common\services\usb\uhc\uhc.c
+
+src\ASF\sam\drivers\matrix\matrix.c
+
 src\ASF\sam\drivers\rtc\rtc.c
+
+src\ASF\sam\drivers\uhp\ohci\ohci_hcd.c
+
+src\ASF\sam\drivers\uhp\uhp_host.c
 
 src\ASF\common\services\clock\samg\sysclk.c
 

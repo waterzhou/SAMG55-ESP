@@ -44,6 +44,7 @@
 #include "misc/debug.h"
 #include "wifi_serial.h"
 #include "daikin/thermo/temperature.h"
+#include "daikin/camera/camera.h"
 
 xQueueHandle serial_in_queue = NULL;
 xQueueHandle serial_out_queue = NULL;
@@ -145,7 +146,8 @@ static int byte2hexstrstr(const uint8_t *pBytes, uint32_t srcLen, uint8_t *pDstS
 
 void wifi_serial_init(uint32_t baudspeed)
 {
-	uint32_t rx_timeout = (SERIAL_FRAME_INTERVAL * baudspeed) / 1000;
+	//uint32_t rx_timeout = (SERIAL_FRAME_INTERVAL * baudspeed) / 1000;
+	uint32_t rx_timeout = (2 * baudspeed) / 1000;
 	sam_usart_opt_t usart_settings = {
 		.baudrate = baudspeed,
 		.char_length = USART_CHRL,
@@ -157,8 +159,8 @@ void wifi_serial_init(uint32_t baudspeed)
 	flexcom_set_opmode(WIFI_SERIAL_PORT_FLEXCOM, FLEXCOM_USART);
 	
 	/* Configure USART */
-	usart_init_rs232(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
-	//usart_init_hw_handshaking(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
+	//usart_init_rs232(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
+	usart_init_hw_handshaking(WIFI_SERIAL_PORT, &usart_settings,sysclk_get_peripheral_hz());
 	
 	usart_set_rx_timeout(WIFI_SERIAL_PORT, rx_timeout);
 	
@@ -188,7 +190,6 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 	status = usart_get_status(WIFI_SERIAL_PORT);
 	//printf("USART6_Handler\r\n");
 	if(status & US_CSR_RXRDY) {
-		
 		if(usart_read(WIFI_SERIAL_PORT, &symbol) == 0) {
 			if(recv_idx < MAXIMUM_DATA_LENGTH) {
 				serial_recving->buf[recv_idx] = (uint8_t)symbol;
@@ -221,7 +222,8 @@ void WIFI_SERIAL_PORT_HANDLER(void)
 		pdc_disable_transfer(p_pdc, PERIPH_PTCR_TXTDIS);
 		usart_disable_interrupt(WIFI_SERIAL_PORT, US_IDR_ENDTX);
 	}
-	else {
+	else if(status &US_CSR_ENDRX){
+		printf("........endrx\r\n");
 		/* Do nothing */
 	}
 }
@@ -395,9 +397,9 @@ static void start_wifi_connect(void)
 extern xSemaphoreHandle startTsensorProcessing;
 static void sendback_temperature ()
 {
-	static uint8_t resp_buf[256];
+	static uint8_t resp_buf[1024];
 	//memset(resp_buf, 0xff, 256);
-	for(int i = 0; i<256; i++)
+	for(int i = 0; i<1024; i++)
 		resp_buf[i] = i;
 	uint8_t *p = &resp_buf[0];
 	static serial_out_pk_t resp_send_packet;
@@ -412,7 +414,7 @@ static void sendback_temperature ()
 	p++;*/
 	
 	resp_out_data->buf = resp_buf;
-	resp_out_data->len = 256;
+	resp_out_data->len = 400;
 	IoT_xQueueSend(serial_out_queue, &resp_out_data, 1000);
 	//nm_uart_send(UART1, &buf[0], p - &buf[0]);*/
 }
@@ -716,9 +718,11 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 
 void wifi_in(void *parameter)
 {
+		Pdc *p_pdc = NULL;
 	serial_in_pk_t *in_data = NULL;
 	wifi_module_reset();
-	IoT_DEBUG(IoT_DBG_SERIOUS, ("wifi_in task started\r\n"));
+	IoT_DEBUG(SERIAL_DBG|IoT_DBG_SERIOUS, ("wifi_in task started\r\n"));
+
 	for(;;) {
 		IoT_xQueueReceive(serial_in_queue, &in_data, portMAX_DELAY);
 		parse_serial_packet(in_data->buf, in_data->len);
@@ -757,6 +761,7 @@ static void vLedModeCallback( xTimerHandle pxTimer )
 		default:
 		break;
 	}
+	//sendback_temperature ();
 }
 
 static void vConfigModeCallback( xTimerHandle pxTimer )
@@ -798,7 +803,9 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 		}
 		else if (button_mode == ENTER_GENERAL_MODE){
 			IoT_DEBUG(GENERIC_DBG | IoT_DBG_INFO, ("perform test command mode\r\n"));
-			startTemperature();			
+			//startTemperature();	
+			//CameraPictureSnapshotReq(0xff);
+			sendback_temperature ();		
 		}
 		IoT_vPortEnterCritical();
 		count = 0;
@@ -821,7 +828,7 @@ void wifi_task(void *parameter)
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_SERIOUS, ("xConfigTimer create failed.\r\n"));
 	}
 	
-	xLedModeTimer = xTimerCreate("xLedTimer", 250 , pdTRUE, ( void * ) 0, vLedModeCallback);
+	xLedModeTimer = xTimerCreate("xLedTimer", 2500 , pdTRUE, ( void * ) 0, vLedModeCallback);
 	if(xLedModeTimer != NULL ){
 		xTimerStart(xLedModeTimer, 0 );
 		// The timer was not created.
@@ -829,8 +836,8 @@ void wifi_task(void *parameter)
 	else{
 		IoT_DEBUG(GENERIC_DBG | IoT_DBG_SERIOUS, ("xLedModeTimer create failed.\r\n"));
 	}
-		
-	IoT_DEBUG(IoT_DBG_SERIOUS, ("serial_out task started\r\n"));
+
+	IoT_DEBUG(GENERIC_DBG | IoT_DBG_SERIOUS, ("serial_out task started\r\n"));
 	
 	//uint8_t test_len = sizeof(dataupload_t);
 	//IoT_DEBUG(SERIAL_DBG | IoT_DBG_SERIOUS, ("test len: %d\r\n", test_len));
@@ -847,7 +854,7 @@ void wifi_task(void *parameter)
 	}
 	
 	IoT_xTaskCreate(wifi_in, "wifi_in", WIFI_RECV_TASK_STACK_SIZE, NULL, WIFI_RECV_TASK_PRIORITY, NULL);
-	
+
 	for(;;) {
 
 		p_pdc = usart_get_pdc_base(WIFI_SERIAL_PORT);

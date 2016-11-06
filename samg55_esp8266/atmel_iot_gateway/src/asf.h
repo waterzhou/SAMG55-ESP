@@ -69,6 +69,10 @@
 #include <freertos_peripheral_control.h>
 #include <freertos_peripheral_control_private.h>
 
+// From module: FreeRTOS - SPI Interface Layer
+#include <freertos_spi_master.h>
+
+
 
 // From module: FreeRTOS - USART Interface Layer
 #include <freertos_usart_serial.h>
@@ -99,7 +103,8 @@
 // From module: Interrupt management - SAM implementation
 #include <interrupt.h>
 
-
+// From module: MATRIX - Bus Matrix
+#include <matrix.h>
 
 // From module: PDC - Peripheral DMA Controller Example
 #include <pdc.h>
@@ -125,7 +130,6 @@
 
 
 
-
 // From module: SUPC - Supply Controller
 #include <supc.h>
 
@@ -147,7 +151,15 @@
 // From module: USART - Univ. Syn Async Rec/Trans
 #include <usart.h>
 
+// From module: USB CDC Protocol
+#include <usb_protocol_cdc.h>
 
+// From module: USB Host CDC (Single Class support)
+#include <uhi_cdc.h>
+
+// From module: USB Host stack core
+#include <uhc.h>
+#include <uhd.h>
 
 // From module: pio_handler support enabled
 #include <pio_handler.h>
