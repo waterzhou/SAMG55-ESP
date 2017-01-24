@@ -70,17 +70,3 @@ uint8_t FastCRC(uint8_t LastCRC, uint8_t newbyte)
 	LastCRC = p_CRCtbl[ LastCRC ^ newbyte ];
 	return(LastCRC);
 }
-
-static uint8_t CalcCRC8( const void *pvData, uint8_t size, uint8_t nInit )
-{
-	uint8_t nCRC = nInit;
-	const uint8_t *pData = (const uint8_t *)pvData;
-	uint8_t nCnt;
-
-	for ( nCnt = 0; nCnt < size; nCnt++ )
-	{
-		nCRC = p_CRCtbl[ nCRC ^ pData[ nCnt ] ];
-	}
-
-	return( nCRC );
-}

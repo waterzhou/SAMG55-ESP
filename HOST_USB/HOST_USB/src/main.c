@@ -58,9 +58,9 @@
 "-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL
 
 
-#define STACK_SIZE_WIFI_TASK		(2048)
-#define STACK_SIZE_CAMERA_TASK		(2048)
-#define STACK_SIZE_TSENSOR_TASK     (2048)
+#define STACK_SIZE_WIFI_TASK		(1024)
+#define STACK_SIZE_CAMERA_TASK		(1024)
+#define STACK_SIZE_TSENSOR_TASK     (1024)
 
 
 extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,signed char *pcTaskName);
@@ -166,6 +166,8 @@ static void prvSetupHardware(void)
 }
 /*! \brief Main function. Execution starts here.
  */
+xTaskHandle xHandleCamera = NULL;
+xTaskHandle xHandleTemperature = NULL;
 int main(void)
 {
 	/* Prepare the hardware to run this demo. */
@@ -178,14 +180,14 @@ int main(void)
 	}
 
 	//task for processing Camera Data
-	if (xTaskCreate(taskCamera, "Camera", STACK_SIZE_CAMERA_TASK, NULL, tskIDLE_PRIORITY + 3, NULL)!=pdPASS){
+	if (xTaskCreate(taskCamera, "Camera", STACK_SIZE_CAMERA_TASK, NULL, tskIDLE_PRIORITY + 3, &xHandleCamera)!=pdPASS){
 		printf("Failed to create Monitor task\r\n");
 	}
 	//task for processing temperature module data
-	/*if (xTaskCreate(taskTSensor, "TSensor", STACK_SIZE_TSENSOR_TASK, NULL, tskIDLE_PRIORITY + 2, NULL)!=pdPASS){
+	if (xTaskCreate(sensor_task, "TSensor", STACK_SIZE_TSENSOR_TASK, NULL, tskIDLE_PRIORITY + 3, &xHandleTemperature)!=pdPASS){
 		printf("Failed to create Temperature Sensor task\r\n");
-	}*/
-		
+	}
+	//vTaskSuspend(xHandleTemperature);	
 	/* Start the RTOS scheduler. */
 	vTaskStartScheduler();
     

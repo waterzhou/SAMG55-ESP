@@ -12,20 +12,12 @@
 xTimerHandle xCameraCommTimeoutTimer = NULL;
 xTimerHandle xCameraQUerytTimer = NULL;
 xSemaphoreHandle startCameraProcessing = NULL;
-
 CameraState_t cameraSendState = CAMERA_STATE_INIT;
-
-// 2016/11 PA
-uint16_t blockSeq = 0;
-//PictureDataRsp_t  pictureData;
 BlockSeqData pictureData;
 
 #define UHI_CDC_BUFFER_SIZE (5*1024)
 
 uint8_t recvBuf[UHI_CDC_BUFFER_SIZE];
-
-extern xSemaphoreHandle startCameraProcessing;
-
 
 typedef union PACK{
 	struct PACK{
@@ -56,7 +48,7 @@ typedef enum PACK{
 }CommStateMachine_t;
 
 CommStateMachine_t commStateMachine = COMM_STATE_MACHINE_SOF;
-uint8_t checksum = 0;
+//uint8_t checksum = 0;
 uint16_t count = 0;
 bool CameraPictureSnapshotReq(uint8_t command)
 {
@@ -134,7 +126,7 @@ void vCameraCommTimeoutTimerCallback( xTimerHandle pxTimer )
 
 
 
-void send_camera_block()
+void send_camera_block(void)
 {
 	static serial_out_pk_t send_packet;
 	serial_out_pk_t *out_data = &send_packet;
@@ -148,7 +140,6 @@ void taskCamera( void *pvParameters)
 	iram_size_t size = 0;
 	/* Initialize the user interface */
 	ui_init();
-
 	/* Start USB host stack */
 	uhc_start();
 	vSemaphoreCreateBinary(startCameraProcessing);

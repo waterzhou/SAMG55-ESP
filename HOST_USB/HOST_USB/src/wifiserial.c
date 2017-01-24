@@ -23,7 +23,6 @@ static serial_in_pk_t serial_pk1;
 static serial_in_pk_t *serial_recving = NULL;
 static serial_in_pk_t *serial_recved = NULL;
 static uint32_t recv_idx = 0;
-static uint32_t sniffer_mode = 0;
 
 uint8_t serial_buf_test[256];
 uint8_t url_buf[128];
@@ -195,30 +194,7 @@ unsigned char sum8(unsigned char *A, unsigned char n)
 	return(checksum);
 }
 
-static unsigned char crc_8(unsigned char *A,unsigned char n)
-{
-	unsigned char i;
-	unsigned char checksum = 0;
 
-	while(n--)
-	{
-		for(i=1; i !=0; i*=2) {
-			if( (checksum & 1) != 0 ) {
-				checksum /= 2;
-				checksum ^= 0X8C;
-			}
-			else {
-				checksum /= 2;
-			}
-
-			if( (*A & i) != 0 ) {
-				checksum ^= 0X8C;
-			}
-		}
-		A++;
-	}
-	return(checksum);
-}
 
 static uint16_t form_serial_packet(uint8_t cmdid, uint8_t *data, uint8_t datalen, uint8_t *buf)
 {
@@ -301,35 +277,8 @@ void config_wifi_module(void)
 	xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
 }
 
-/* Upload current states to Wi-Fi module */
-static void auto_states_upload()
-{
-
-	static uint8_t pkt_buf[16];
-	static serial_out_pk_t send_packet;
-	serial_out_pk_t *out_data = &send_packet;
-	uint16_t pkt_len;
-	
-	pkt_len = form_serial_packet(CUSTOMIZE_CMD_DATA_UPLOAD, &g_virtual_dev, sizeof(g_virtual_dev), pkt_buf);
-	out_data->buf = pkt_buf;
-	out_data->len = pkt_len;
-	xQueueSend(serial_out_queue, &out_data, 0);
-}
-
-/* Send connect command to start server connecting */
-static void start_wifi_connect(void)
-{
-	static serial_out_pk_t send_packet;
-	serial_out_pk_t *out_data = &send_packet;
-	static uint8_t pkt_buf[16];
-	uint16_t pkt_len;
-	
-	pkt_len = form_serial_packet(CMD_CONNECT, NULL, 0, pkt_buf);
-	out_data->buf = pkt_buf;
-	out_data->len = pkt_len;
-	xQueueSend(serial_out_queue, &out_data, portMAX_DELAY);
-}
 extern xSemaphoreHandle startTsensorProcessing;
+#if 0
 static void sendback_temperature ()
 {
 	static uint8_t resp_buf[1024];
@@ -339,52 +288,34 @@ static void sendback_temperature ()
 	uint8_t *p = &resp_buf[0];
 	static serial_out_pk_t resp_send_packet;
 	static serial_out_pk_t *resp_out_data = &resp_send_packet;
-
-	/**p++ = SERIAL_SOF;
-	*p++ = ENCRYPT_MODE;
-	*p++ = 2;
-	*p++ = CUSTOMIZE_CMD_DEV_CTRL_GET_TEMP_RSP;
-	//*p++ = temperature;
-	*p = sum8(&resp_buf[0], p - &resp_buf[0]);
-	p++;*/
-	
 	resp_out_data->buf = resp_buf;
 	resp_out_data->len = 400;
 	xQueueSend(serial_out_queue, &resp_out_data, 1000);
 	//nm_uart_send(UART1, &buf[0], p - &buf[0]);*/
 }
+#endif
+
+
 static void startTemperature(void)
 {
-	#if 0 //for temperaature
-	printf("Receive get temperature command.\r\n"));
-	//Just for test for flow control
-	//sendback_temperature();
-	//return;	
+	printf("Receive get temperature command.\r\n");
 	Temp_Measure_Command_Send(INIT_SENSATION_MEASUREMENT);
 	delay_ms(500);
 	Temp_Measure_Command_Send(SENSATION_MEASUREMENT_START);
 	delay_ms(500);
 	Temp_Measure_Get_Air_Condition_Info(0x00, 50);
-	#endif
 }
+
 static void startPicture(void)
 {
 	printf("Receive get snapshot command.\r\n");
 	CameraPictureSnapshotReq(0xff);
 }
 
-
-
 static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 {
 	uint16_t len;
 	uint8_t *p = NULL;
-
-	static data_upload_t data_upload =
-	{
-		.cmd_index = 0,
-		.value = 0
-	};
 	
 	switch(cmdid)
 	{
@@ -407,11 +338,11 @@ static void execute_serial_cmd(uint8_t cmdid, uint8_t *data, uint8_t datalen)
 		case CUSTOMIZE_CMD_DEV_CTRL_GET_PIC:
 			startPicture();
 		break;
-#if 0 //for temperaature
+#if 1 //for temperaature
 		case CUSTOMIZE_CMD_DEV_TEMP_RSP:
 			printf("get wifi res for image\r\n");
-			if (thermoIndex < 37)
-				signal_to_wifi(thermimage, thermoIndex++);
+			if (thermoIndex < 38)
+				signal_to_wifi(&thermimage[4], thermoIndex++);
 		break;
 #endif
 		
@@ -583,7 +514,6 @@ void parse_serial_packet(uint8_t *buf, uint8_t buflen)
 
 void wifi_in(void *parameter)
 {
-	Pdc *p_pdc = NULL;
 	serial_in_pk_t *in_data = NULL;
 	wifi_module_reset();
 	printf("wifi_in task started\r\n");
@@ -667,10 +597,7 @@ static void vConfigModeCallback( xTimerHandle pxTimer )
 			xQueueSend(serial_out_queue, &out_data, 0);
 		}
 		else if (button_mode == ENTER_GENERAL_MODE){
-			printf("perform test command mode\r\n");
-			//startTemperature();	
-			//CameraPictureSnapshotReq(0xff);
-			//sendback_temperature ();		
+			printf("perform test command mode\r\n");	
 			startPicture();
 		}
 		vPortEnterCritical();
@@ -724,9 +651,7 @@ void wifi_task(void *parameter)
 		
 		/* Pended here if no message received */
 		xQueueReceive(serial_out_queue, &out_data, portMAX_DELAY);
-		
-		uint8_t rbuf[128];
-		//byte2hexstrstr(out_data->buf, out_data->len, rbuf, 128);
+
 		printf("Serial OUT(%d)\r\n", out_data->len);
 
 		packet.ul_addr = (uint32_t)out_data->buf;
